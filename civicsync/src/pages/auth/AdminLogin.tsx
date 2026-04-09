@@ -4,10 +4,8 @@ import { useStore } from '../../store'
 import { FormError } from '../../components/ui'
 import { Shield, ArrowLeft } from 'lucide-react'
 import toast from 'react-hot-toast'
-
 const ADMIN_EMAIL = 'admin@gmail.com'
 const ADMIN_PASS = '1234'
-
 export default function AdminLogin() {
   const navigate = useNavigate()
   const { login } = useStore()
@@ -15,7 +13,6 @@ export default function AdminLogin() {
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setError('')
@@ -31,7 +28,6 @@ export default function AdminLogin() {
     navigate('/admin/dashboard')
     setLoading(false)
   }
-
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-50 to-indigo-100 flex items-center justify-center p-4">
       <div className="bg-white rounded-3xl shadow-xl w-full max-w-md p-8 animate-fade-up">

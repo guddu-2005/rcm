@@ -1,69 +1,48 @@
 import { useEffect, useRef, useState, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useStore } from '../store'
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore — SDK has CJS/ESM interop quirk; grab default off the module
 import VapiModule from '@vapi-ai/web'
-// Handle both `default` and direct export
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const Vapi: any = (VapiModule as any).default ?? VapiModule
-
 import { getComplaints, getWorkers, getCitizens } from '../storage'
 import { type Complaint } from '../types'
-
-// ─── Vapi credentials ────────────────────────────────────────
 const VAPI_PUBLIC_KEY = '3849e275-4792-47d0-9525-ccdbe9c0245e'
 const ASSISTANT_ID    = '0c31e750-dacc-479b-a730-1e3089e28b1b'
-
-// ─── Build real-time context string from localStorage ────────
 function buildContext(): string {
   const complaints = getComplaints()
   const workers    = getWorkers()
   const citizens   = getCitizens()
-
   const total    = complaints.length
   const byStatus: Record<string, number> = {}
   const byDept:   Record<string, number> = {}
   const byPrio:   Record<string, number> = {}
-
   complaints.forEach((c: Complaint) => {
     byStatus[c.status]     = (byStatus[c.status]     || 0) + 1
     byDept[c.department]   = (byDept[c.department]   || 0) + 1
     byPrio[c.priority]     = (byPrio[c.priority]     || 0) + 1
   })
-
   const recent = [...complaints]
     .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
     .slice(0, 5)
     .map(c => `[${c.id}] "${c.title}" — ${c.department} — ${c.status} — ${c.priority} priority`)
     .join('\n')
-
   return `
 === CivicSync Live Data (${new Date().toLocaleString('en-IN')}) ===
-
 PLATFORM OVERVIEW:
 - Total Complaints: ${total}
 - Total Citizens: ${citizens.length}
 - Total Field Workers: ${workers.length}
-
 COMPLAINTS BY STATUS:
 ${Object.entries(byStatus).map(([k,v]) => `- ${k}: ${v}`).join('\n') || '- None'}
-
 COMPLAINTS BY DEPARTMENT:
 ${Object.entries(byDept).map(([k,v]) => `- ${k}: ${v}`).join('\n') || '- None'}
-
 COMPLAINTS BY PRIORITY:
 ${Object.entries(byPrio).map(([k,v]) => `- ${k} Priority: ${v}`).join('\n') || '- None'}
-
 MOST RECENT 5 COMPLAINTS:
 ${recent || '- None'}
-
 DEPARTMENTS AVAILABLE:
 Water Supply, Garbage & Sanitation, Electricity, Road & Infrastructure, Public Transport, Traffic Management
-
 COMPLAINT LIFECYCLE STAGES:
 Submitted → Verified → Assigned → In Progress → Resolved → Closed
-
 PORTAL ROLES:
 - Citizen: File & track complaints
 - Admin: Full oversight, assign workers
@@ -71,16 +50,11 @@ PORTAL ROLES:
 - Worker: Accept tasks, mark resolved
 `.trim()
 }
-
-// ─── Types ───────────────────────────────────────────────────
 type CallState = 'idle' | 'connecting' | 'active' | 'ending'
-
 interface Message {
   role: 'user' | 'assistant'
   text: string
 }
-
-// ─── Inline styles injected once ─────────────────────────────
 const VA_CSS = `
 @keyframes vaPulse {
   0%,100%{transform:scale(1);box-shadow:0 0 0 0 rgba(34,211,238,0.7)}
@@ -114,8 +88,6 @@ const VA_CSS = `
 .va-dot:nth-child(2){animation-delay:.16s}
 .va-dot:nth-child(3){animation-delay:.32s}
 `
-
-// ─── Component ───────────────────────────────────────────────
 export default function VoiceAgent() {
   const navigate = useNavigate()
   const vapiRef     = useRef<any>(null)
@@ -125,8 +97,6 @@ export default function VoiceAgent() {
   const [volumeLevel, setVolumeLevel] = useState(0)
   const [isSpeaking, setIsSpeaking]   = useState(false)
   const msgEndRef = useRef<HTMLDivElement>(null)
-
-  // Inject CSS once
   useEffect(() => {
     if (document.getElementById('va-css')) return
     const s = document.createElement('style')
@@ -134,17 +104,12 @@ export default function VoiceAgent() {
     s.textContent = VA_CSS
     document.head.appendChild(s)
   }, [])
-
-  // Auto-scroll messages
   useEffect(() => {
     msgEndRef.current?.scrollIntoView({ behavior: 'smooth' })
   }, [messages])
-
-  // ── Init Vapi & event listeners ──────────────────────────
   useEffect(() => {
     const vapi = new Vapi(VAPI_PUBLIC_KEY)
     vapiRef.current = vapi
-
     vapi.on('call-start', () => {
       setState('active')
       setMessages([{
@@ -152,19 +117,14 @@ export default function VoiceAgent() {
         text: "Namaste! Main CivicSync ka voice assistant hoon. Aap mujhse English ya Hinglish mein baat kar sakte hain. Complaints, status, ya portal ke baare mein kuch puchna hai?"
       }])
     })
-
     vapi.on('call-end', () => {
       setState('idle')
       setIsSpeaking(false)
     })
-
     vapi.on('speech-start', () => setIsSpeaking(true))
     vapi.on('speech-end',   () => setIsSpeaking(false))
-
     vapi.on('volume-level', (vol: number) => setVolumeLevel(vol))
-
     vapi.on('message', (msg: any) => {
-      // Capture transcript messages
       if (msg.type === 'transcript') {
         if (msg.transcriptType === 'final' && msg.transcript?.trim()) {
           setMessages(prev => [...prev, {
@@ -173,20 +133,15 @@ export default function VoiceAgent() {
           }])
         }
       }
-
-      // Handle Function Calling / Tool Calls for Voice Control
       if (msg.type === 'tool-calls' || msg.type === 'function-call') {
         const list = msg.toolWithToolCallList || msg.toolCalls || (msg.functionCall ? [msg] : [])
         list.forEach((item: any) => {
           const call = item.toolCall || item.functionCall || item;
           const funcName = call?.name || call?.function?.name;
-          
           if (funcName === 'navigate_website') {
             const rawArgs = call.arguments || call.function?.arguments;
             const args = typeof rawArgs === 'string' ? JSON.parse(rawArgs) : rawArgs;
-            
             console.log('[Voice Control] Navigating to:', args.page)
-            
             switch (args.page) {
               case 'file_complaint': navigate('/citizen/dashboard/file'); break;
               case 'my_complaints': navigate('/citizen/dashboard/complaints'); break;
@@ -203,33 +158,24 @@ export default function VoiceAgent() {
                 break;
             }
           }
-
           if (funcName === 'fill_complaint_form') {
             const rawArgs = call.arguments || call.function?.arguments;
             const args = typeof rawArgs === 'string' ? JSON.parse(rawArgs) : rawArgs;
-            
             console.log('[Voice Control] Filling form with:', args)
-            
-            // Dispatch data to the store
             useStore.getState().setVoiceCommandData({
               title: args.title,
               description: args.description,
               category: args.category,
               triggerLocation: args.trigger_location
             });
-            
-            // Ensure they are on the correct page to see it happen
             if (!window.location.pathname.includes('/citizen/dashboard/file')) {
               navigate('/citizen/dashboard/file');
             }
           }
-
           if (funcName === 'admin_control') {
             const rawArgs = call.arguments || call.function?.arguments;
             const args = typeof rawArgs === 'string' ? JSON.parse(rawArgs) : rawArgs;
-            
             console.log('[Voice Control] Admin command:', args)
-            
             useStore.getState().setAdminCommandData({
               searchQuery: args.search_query,
               filterStatus: args.filter_status,
@@ -237,20 +183,15 @@ export default function VoiceAgent() {
               filterDept: args.filter_department,
               runDedup: args.run_dedup
             });
-            
-            // Route to All Complaints page if not already there
             if (!window.location.pathname.includes('/admin/dashboard/complaints')) {
               navigate('/admin/dashboard/complaints');
             }
           }
         })
       }
-
-      // Capture function-call result messages
       if (msg.type === 'conversation-update') {
         const last = msg.conversation?.[msg.conversation.length - 1]
         if (last?.role === 'assistant' && last?.content) {
-          // avoid duplicate — only add if new
           setMessages(prev => {
             const lastPrev = prev[prev.length - 1]
             if (lastPrev?.role === 'assistant' && lastPrev.text === last.content) return prev
@@ -259,26 +200,19 @@ export default function VoiceAgent() {
         }
       }
     })
-
     vapi.on('error', (err: any) => {
       console.error('[Vapi error]', err)
       setState('idle')
     })
-
     return () => { vapi.stop() }
   }, [navigate])
-
-  // ── Start call ───────────────────────────────────────────
   const startCall = useCallback(async () => {
     if (state !== 'idle') return
     setState('connecting')
     setOpen(true)
     setMessages([])
-
     const context = buildContext()
-
     try {
-      // Vapi: start(assistantId, assistantOverrides)
       await vapiRef.current!.start(ASSISTANT_ID, {
         variableValues: {
           civic_data: context,
@@ -290,26 +224,18 @@ export default function VoiceAgent() {
       setState('idle')
     }
   }, [state])
-
-  // ── End call ─────────────────────────────────────────────
   const endCall = useCallback(() => {
     setState('ending')
     vapiRef.current?.stop()
   }, [])
-
-  // ── Close panel (without ending call) ────────────────────
   const togglePanel = () => {
     if (state === 'idle') { setOpen(o => !o); return }
     setOpen(o => !o)
   }
-
-  // ── Volume bar width ──────────────────────────────────────
   const volPct = Math.min(100, Math.round(volumeLevel * 150))
-
   return (
     <div style={{ position: 'fixed', bottom: 24, right: 24, zIndex: 9999, display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 12 }}>
-
-      {/* ── Conversation Panel ── */}
+      {}
       {open && (
         <div className="va-panel" style={{
           width: 340, maxHeight: 480,
@@ -321,7 +247,7 @@ export default function VoiceAgent() {
           display: 'flex', flexDirection: 'column',
           overflow: 'hidden',
         }}>
-          {/* Header */}
+          {}
           <div style={{
             padding: '14px 16px',
             borderBottom: '1px solid rgba(255,255,255,0.06)',
@@ -347,7 +273,7 @@ export default function VoiceAgent() {
                 : '● Listening'}
               </div>
             </div>
-            {/* Volume bar */}
+            {}
             {state === 'active' && (
               <div style={{ width: 48, height: 4, background: 'rgba(255,255,255,0.08)', borderRadius: 4, overflow: 'hidden' }}>
                 <div style={{ height: '100%', width: `${volPct}%`, background: '#22d3ee', borderRadius: 4, transition: 'width 0.1s ease' }} />
@@ -355,8 +281,7 @@ export default function VoiceAgent() {
             )}
             <button onClick={togglePanel} style={{ color: '#64748b', background: 'none', border: 'none', cursor: 'pointer', fontSize: 16, lineHeight: 1 }}>✕</button>
           </div>
-
-          {/* Messages */}
+          {}
           <div style={{ flex: 1, overflowY: 'auto', padding: '14px 14px 6px', display: 'flex', flexDirection: 'column', gap: 10, scrollbarWidth: 'none' }}>
             {state === 'connecting' && (
               <div style={{ display: 'flex', justifyContent: 'center', padding: '20px 0' }}>
@@ -415,8 +340,7 @@ export default function VoiceAgent() {
             ))}
             <div ref={msgEndRef} />
           </div>
-
-          {/* Footer actions */}
+          {}
           <div style={{ padding: '12px 14px 14px', borderTop: '1px solid rgba(255,255,255,0.06)', display: 'flex', gap: 8 }}>
             {state === 'idle' ? (
               <button onClick={startCall} style={{
@@ -444,17 +368,15 @@ export default function VoiceAgent() {
           </div>
         </div>
       )}
-
-      {/* ── Floating Mic Button ── */}
+      {}
       <div style={{ position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-        {/* Ripple rings when active */}
+        {}
         {state === 'active' && (
           <>
             <div className="va-ripple" />
             <div className="va-ripple2" />
           </>
         )}
-
         <button
           onClick={state === 'idle' ? () => { startCall(); setOpen(true) } : togglePanel}
           title={state === 'idle' ? 'Talk to CivicSync AI' : 'Toggle panel'}
@@ -491,8 +413,7 @@ export default function VoiceAgent() {
             <span style={{ fontSize: 22 }}>🎙️</span>
           )}
         </button>
-
-        {/* Tooltip on idle */}
+        {}
         {state === 'idle' && !open && (
           <div style={{
             position: 'absolute', right: 68, top: '50%', transform: 'translateY(-50%)',

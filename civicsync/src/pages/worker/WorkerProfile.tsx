@@ -2,14 +2,12 @@ import { useStore } from '../../store'
 import { getWorkers, getComplaints } from '../../storage'
 import { Avatar } from '../../components/ui'
 import { HardHat, CheckCircle, Mail, Briefcase } from 'lucide-react'
-
 export default function WorkerProfile() {
   const { session } = useStore()
   const workers = getWorkers()
   const worker = workers.find(w => w.id === session?.userId)
   const complaints = getComplaints()
   const myTasks = complaints.filter(c => c.assignedWorkerId === session?.userId)
-
   return (
     <div className="max-w-xl">
       <h1 className="font-display text-2xl font-bold text-gray-900 mb-6">My Profile</h1>
@@ -21,7 +19,6 @@ export default function WorkerProfile() {
             <span className="text-xs bg-amber-100 text-amber-700 font-semibold px-2.5 py-1 rounded-full">Field Worker</span>
           </div>
         </div>
-
         <div className="grid sm:grid-cols-2 gap-4">
           {[
             { icon: <Mail size={15} />, label: 'Email', val: worker?.email || session?.email },

@@ -3,12 +3,10 @@ import { collection, query, where, onSnapshot } from 'firebase/firestore';
 import { db } from '../firebase';
 import useStore from '../store';
 import { Bell, Plus, TrendingUp, CheckCircle, Clock, AlertTriangle } from 'lucide-react';
-
 const STATUS_COLORS = {
   submitted: '#60a5fa', pending: '#fbbf24', underReview: '#a78bfa',
   assigned: '#22d3ee', inProgress: '#fb923c', escalated: '#f87171', resolved: '#4ade80',
 };
-
 function ComplaintCard({ c, onClick }) {
   const cat = c.category || 'other';
   const icons = { water: '💧', electricity: '⚡', road: '🛣️', health: '🏥', sanitation: '🗑️', fire: '🔥', flood: '🌊', crime: '🚨', other: '📋', gas: '💨', noise: '📢', animal: '🐕' };
@@ -23,7 +21,6 @@ function ComplaintCard({ c, onClick }) {
     if (h < 24) return `${h}h ago`;
     return `${Math.floor(h / 24)}d ago`;
   };
-
   return (
     <div
       className="complaint-card fade-up"
@@ -62,23 +59,19 @@ function ComplaintCard({ c, onClick }) {
     </div>
   );
 }
-
 export default function HomeScreen({ onViewComplaint, onNewComplaint }) {
   const { user, profile } = useStore();
   const [complaints, setComplaints] = useState([]);
   const [loading, setLoading] = useState(true);
   const [activeFilter, setActiveFilter] = useState('all');
-
   useEffect(() => {
     if (!user) return;
-    // Uses simple where filter (no composite index needed); sorted client-side
     const q = query(
       collection(db, 'complaints'),
       where('userId', '==', user.uid)
     );
     const unsub = onSnapshot(q, (snap) => {
       const data = snap.docs.map(d => ({ id: d.id, ...d.data() }));
-      // Client-side sort by createdAt descending
       data.sort((a, b) => {
         const ta = a.createdAt?.seconds || 0;
         const tb = b.createdAt?.seconds || 0;
@@ -92,27 +85,23 @@ export default function HomeScreen({ onViewComplaint, onNewComplaint }) {
     });
     return unsub;
   }, [user]);
-
   const filters = ['all', 'pending', 'inProgress', 'resolved'];
   const filtered = activeFilter === 'all' ? complaints :
     complaints.filter(c => c.status === activeFilter || (activeFilter === 'pending' && (c.status === 'submitted' || c.status === 'pending' || c.status === 'underReview')));
-
   const stats = {
     total: complaints.length,
     active: complaints.filter(c => !['resolved'].includes(c.status)).length,
     resolved: complaints.filter(c => c.status === 'resolved').length,
   };
-
   const greet = () => {
     const h = new Date().getHours();
     if (h < 12) return 'Good morning';
     if (h < 17) return 'Good afternoon';
     return 'Good evening';
   };
-
   return (
     <div className="screen">
-      {/* Hero */}
+      {}
       <div className="hero">
         <div className="hero-greeting">{greet()},</div>
         <div className="hero-title">{profile?.name || user?.displayName || 'Citizen'} 👋</div>
@@ -131,8 +120,7 @@ export default function HomeScreen({ onViewComplaint, onNewComplaint }) {
           </div>
         </div>
       </div>
-
-      {/* Quick Action */}
+      {}
       <div style={{ padding: '16px 16px 8px' }}>
         <button
           onClick={onNewComplaint}
@@ -164,8 +152,7 @@ export default function HomeScreen({ onViewComplaint, onNewComplaint }) {
           <span style={{ marginLeft: 'auto', fontSize: 20 }}>→</span>
         </button>
       </div>
-
-      {/* Filter Tabs */}
+      {}
       <div style={{ padding: '12px 16px 0', display: 'flex', gap: 8, overflowX: 'auto', paddingBottom: 4 }}>
         {filters.map(f => (
           <button
@@ -191,8 +178,7 @@ export default function HomeScreen({ onViewComplaint, onNewComplaint }) {
           </button>
         ))}
       </div>
-
-      {/* Complaints List */}
+      {}
       <div style={{ padding: 16, display: 'flex', flexDirection: 'column', gap: 10 }}>
         {loading ? (
           <div style={{ textAlign: 'center', padding: 40 }}>

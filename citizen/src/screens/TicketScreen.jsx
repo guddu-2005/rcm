@@ -1,4 +1,4 @@
-// Ticket success screen shown after successful submission
+
 export default function TicketScreen({ ticketId, supported, onDone }) {
   return (
     <div style={{ minHeight: '100vh', background: 'var(--bg)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: 24, textAlign: 'center' }}>
@@ -12,17 +12,14 @@ export default function TicketScreen({ ticketId, supported, onDone }) {
       }}>
         {supported ? '👍' : '✅'}
       </div>
-
       <h1 style={{ fontSize: 24, fontWeight: 800, marginBottom: 8 }}>
         {supported ? 'Complaint Supported!' : 'Complaint Submitted!'}
       </h1>
-
       <p style={{ color: 'var(--text2)', fontSize: 15, lineHeight: 1.6, marginBottom: 24 }}>
         {supported
           ? 'You\'ve supported an existing complaint. This increases its priority score and speeds up resolution!'
           : 'Your complaint has been received and will be processed by our AI priority engine.'}
       </p>
-
       {ticketId && (
         <div>
           <div style={{ fontSize: 13, color: 'var(--text2)', marginBottom: 6 }}>Your Ticket ID</div>
@@ -31,7 +28,6 @@ export default function TicketScreen({ ticketId, supported, onDone }) {
           </div>
         </div>
       )}
-
       <div style={{ background: 'var(--card)', border: '1px solid var(--border)', borderRadius: 14, padding: 16, width: '100%', marginBottom: 24 }}>
         <div style={{ fontWeight: 700, marginBottom: 12 }}>What happens next?</div>
         {[
@@ -47,7 +43,6 @@ export default function TicketScreen({ ticketId, supported, onDone }) {
           </div>
         ))}
       </div>
-
       <button className="btn btn-primary" onClick={onDone} style={{ width: '100%' }}>
         🏠 Back to Home
       </button>

@@ -8,7 +8,6 @@ import { MapPin, Image as ImageIcon, Send, X, AlertTriangle, CheckCircle, Extern
 import toast from 'react-hot-toast'
 import { findDuplicate, type DuplicateMatch } from '../../dedup'
 import { computePriorityScore, scoreColor, scoreBg, scoreLabel, fetchGroqPriority, type PriorityScore } from '../../priorityEngine'
-
 export default function FileComplaint() {
   const { session, refreshComplaints, voiceCommandData, setVoiceCommandData } = useStore()
   const navigate = useNavigate()
@@ -20,17 +19,12 @@ export default function FileComplaint() {
   const [errors, setErrors] = useState<Record<string, string>>({})
   const [loading, setLoading] = useState(false)
   const [dupModal, setDupModal] = useState<DuplicateMatch | null>(null)
-  
-  
   const [aiScore, setAiScore] = useState<PriorityScore | null>(null)
   const [isScoring, setIsScoring] = useState(false)
   const [gettingLocation, setGettingLocation] = useState(false)
-
-  // Speech Recognition State
   const recognitionRef = useRef<any>(null)
   const [activeMic, setActiveMic] = useState<'title' | 'description' | null>(null)
   const [speechLang, setSpeechLang] = useState('en-IN')
-
   const toggleMic = (field: 'title' | 'description') => {
     if (activeMic) {
       recognitionRef.current?.stop()
@@ -39,18 +33,15 @@ export default function FileComplaint() {
         return
       }
     }
-
     const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition
     if (!SpeechRecognition) {
       toast.error('Voice input is not supported in this browser. Try Chrome or Edge.')
       return
     }
-
     const recognition = new SpeechRecognition()
     recognition.lang = speechLang
     recognition.continuous = true
     recognition.interimResults = true
-
     recognition.onresult = (event: any) => {
       let finalTranscript = ''
       for (let i = event.resultIndex; i < event.results.length; ++i) {
@@ -62,22 +53,18 @@ export default function FileComplaint() {
         setForm(prev => ({ ...prev, [field]: prev[field] + finalTranscript }))
       }
     }
-
     recognition.onerror = (event: any) => {
       console.error('Speech error', event.error)
       if (event.error !== 'no-speech') toast.error('Mic error: ' + event.error)
       setActiveMic(null)
     }
-
     recognition.onend = () => {
       setActiveMic(null)
     }
-
     recognition.start()
     setActiveMic(field)
     recognitionRef.current = recognition
   }
-
   const handleLangChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setSpeechLang(e.target.value)
     if (activeMic) {
@@ -85,7 +72,6 @@ export default function FileComplaint() {
       setActiveMic(null)
     }
   }
-
   const handleGetLocation = () => {
     if (!navigator.geolocation) {
       toast.error('Geolocation is not supported by your browser')
@@ -115,8 +101,6 @@ export default function FileComplaint() {
       }
     )
   }
-
-  // Voice Command Listener
   useEffect(() => {
     if (voiceCommandData) {
       setForm(prev => ({
@@ -125,37 +109,27 @@ export default function FileComplaint() {
         description: voiceCommandData.description || prev.description,
         category: voiceCommandData.category || prev.category,
       }))
-      
       if (voiceCommandData.triggerLocation) {
         handleGetLocation()
       }
-      
       setVoiceCommandData(null)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [voiceCommandData])
-
-  // Auto-score logic (debounce API call)
   useEffect(() => {
     if (form.title.length <= 3 && form.description.length <= 10) {
       setAiScore(null)
       return
     }
-
-    // Set a fast local fallback initially
     const local = computePriorityScore(form.title, form.description, form.category)
     setAiScore(local)
     setIsScoring(true)
-
     const timeout = setTimeout(async () => {
       const gRes = await fetchGroqPriority(form.title, form.description, form.category)
       if (gRes) setAiScore(gRes)
       setIsScoring(false)
     }, 800)
-
     return () => clearTimeout(timeout)
   }, [form.title, form.description, form.category])
-
   const validate = () => {
     const e: Record<string, string> = {}
     if (!form.title.trim())             e.title = 'Title is required'
@@ -167,7 +141,6 @@ export default function FileComplaint() {
     setErrors(e)
     return Object.keys(e).length === 0
   }
-
   const handlePhoto = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
     if (!file) return
@@ -176,7 +149,6 @@ export default function FileComplaint() {
     reader.onload = ev => setPhoto(ev.target?.result as string)
     reader.readAsDataURL(file)
   }
-
   const doSubmit = () => {
     const dept = CATEGORY_TO_DEPT[form.category]
     addComplaint({
@@ -195,46 +167,36 @@ export default function FileComplaint() {
     toast.success('✅ Complaint submitted! You can track it in My Complaints.')
     navigate('/citizen/dashboard/complaints')
   }
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     if (!validate()) return
     setLoading(true)
     await new Promise(r => setTimeout(r, 500))
-
-    // ── Duplicate check ──────────────────────
     const existing = getComplaints()
     const dup = findDuplicate(
       { title: form.title.trim(), description: form.description.trim(), location: form.location.trim(), category: form.category, citizenId: session!.userId },
       existing
     )
-
     setLoading(false)
-
     if (dup) {
-      setDupModal(dup)  // Show blocking modal
+      setDupModal(dup)
       return
     }
-
     doSubmit()
   }
-
   const set = (k: string, v: string) => {
     setForm(f => ({ ...f, [k]: v }))
     if (errors[k]) setErrors(e => ({ ...e, [k]: '' }))
   }
-
   const dept = form.category ? CATEGORY_TO_DEPT[form.category] : null
-
   return (
     <div className="max-w-2xl">
       <div className="mb-6">
         <h1 className="font-display text-2xl font-bold text-gray-900 mb-1">File a Complaint</h1>
         <p className="text-sm text-gray-500">Report a civic issue. It will be auto-routed to the right department.</p>
       </div>
-
       <form onSubmit={handleSubmit} className="cs-card space-y-5">
-        {/* Category */}
+        {}
         <div>
           <label className="cs-label">Issue Category *</label>
           <select className="cs-input" value={form.category} onChange={e => set('category', e.target.value)}>
@@ -248,8 +210,7 @@ export default function FileComplaint() {
             </p>
           )}
         </div>
-
-        {/* Title */}
+        {}
         <div>
           <div className="flex items-center justify-between mb-1.5">
             <label className="cs-label mb-0">Complaint Title *</label>
@@ -281,8 +242,7 @@ export default function FileComplaint() {
           <input className="cs-input" placeholder="Brief, clear title of the issue" value={form.title} onChange={e => set('title', e.target.value)} maxLength={100} />
           <FormError msg={errors.title} />
         </div>
-
-        {/* Description */}
+        {}
         <div>
           <div className="flex items-center justify-between mb-1.5">
             <label className="cs-label mb-0">Detailed Description *</label>
@@ -317,8 +277,7 @@ export default function FileComplaint() {
             <span className="text-xs text-gray-400">{form.description.length} chars</span>
           </div>
         </div>
-
-        {/* AI Priority Preview — real-time */}
+        {}
         {aiScore && (
           <div style={{ background: scoreBg(aiScore.score), border: `1px solid ${scoreColor(aiScore.score)}33`, borderRadius: 14, padding: '12px 14px' }}>
             <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom: 8 }}>
@@ -338,18 +297,17 @@ export default function FileComplaint() {
                 {aiScore.score}%
               </span>
             </div>
-            {/* Bar */}
+            {}
             <div style={{ height: 7, background: 'rgba(0,0,0,0.08)', borderRadius: 99, overflow:'hidden', marginBottom: 8 }}>
               <div style={{ height:'100%', width:`${aiScore.score}%`, background: scoreColor(aiScore.score), borderRadius: 99, transition:'width 0.4s ease' }} />
             </div>
-            {/* Factors */}
+            {}
             {aiScore.factors.slice(0, 3).map((f, i) => (
               <div key={i} style={{ fontSize: 10, color:'#64748b', marginTop: 2 }}>• {f}</div>
             ))}
           </div>
         )}
-
-        {/* Location */}
+        {}
         <div>
           <label className="cs-label flex items-center gap-1"><MapPin size={12} /> Location *</label>
           <div className="flex gap-2">
@@ -370,8 +328,7 @@ export default function FileComplaint() {
           </div>
           <FormError msg={errors.location} />
         </div>
-
-        {/* Priority */}
+        {}
         <div>
           <label className="cs-label">Priority</label>
           <div className="flex gap-3">
@@ -389,8 +346,7 @@ export default function FileComplaint() {
             ))}
           </div>
         </div>
-
-        {/* Photo */}
+        {}
         <div>
           <label className="cs-label flex items-center gap-1"><ImageIcon size={12} /> Photo (Optional)</label>
           {photo ? (
@@ -406,26 +362,12 @@ export default function FileComplaint() {
               <ImageIcon size={20} className="text-gray-400 mb-2" />
               <span className="text-sm text-gray-500">Click to upload photo</span>
               <span className="text-xs text-gray-400">Max 2MB — JPG, PNG</span>
-              <input type="file" accept="image/*" className="hidden" onChange={handlePhoto} />
-            </label>
-          )}
-        </div>
-
-        <button type="submit" disabled={loading} className="cs-btn-primary w-full justify-center py-3 text-base">
-          {loading
-            ? <><span className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" /> Checking for duplicates...</>
-            : <><Send size={16} /> Submit Complaint</>
-          }
-        </button>
-      </form>
-
-      {/* ── Duplicate Warning Modal ── */}
+              <input type="file" accept="image}
       {dupModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4"
           style={{ background: 'rgba(0,0,0,0.55)', backdropFilter: 'blur(4px)' }}>
           <div className="bg-white rounded-2xl shadow-2xl max-w-lg w-full overflow-hidden animate-fade-up">
-
-            {/* Header */}
+            {}
             <div className="bg-amber-50 border-b border-amber-100 px-6 py-5 flex items-start gap-3">
               <div className="w-10 h-10 bg-amber-100 rounded-xl flex items-center justify-center flex-shrink-0">
                 <AlertTriangle size={20} className="text-amber-600" />
@@ -435,8 +377,7 @@ export default function FileComplaint() {
                 <p className="text-sm text-amber-700 mt-0.5">{dupModal.reason}</p>
               </div>
             </div>
-
-            {/* Existing complaint preview */}
+            {}
             <div className="px-6 py-5">
               <p className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-3">Existing Open Complaint</p>
               <div className="p-4 bg-gray-50 rounded-xl border border-gray-200 space-y-2">
@@ -455,7 +396,6 @@ export default function FileComplaint() {
                   <div className="text-xs text-blue-600">👷 Assigned to: {dupModal.existing.assignedWorkerName}</div>
                 )}
               </div>
-
               <div className="mt-4 p-3 bg-blue-50 rounded-xl border border-blue-100">
                 <p className="text-xs text-blue-700 leading-relaxed">
                   <strong>💡 Tip:</strong> Your complaint appears similar to an existing one that's already being tracked.
@@ -463,8 +403,7 @@ export default function FileComplaint() {
                 </p>
               </div>
             </div>
-
-            {/* Actions */}
+            {}
             <div className="px-6 pb-5 flex flex-col sm:flex-row gap-3">
               <button
                 onClick={() => {
@@ -484,7 +423,6 @@ export default function FileComplaint() {
                 <CheckCircle size={15} /> Submit Anyway
               </button>
             </div>
-
             <button onClick={() => setDupModal(null)}
               className="absolute top-4 right-4 text-gray-400 hover:text-gray-600">
               <X size={18} />

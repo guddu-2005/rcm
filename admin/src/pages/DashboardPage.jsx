@@ -11,9 +11,7 @@ import {
 } from 'recharts';
 import { rankComplaints } from '../intelligence/priorityEngine';
 import { useNavigate } from 'react-router-dom';
-
 const COLORS = ['#8b5cf6', '#3b82f6', '#06b6d4', '#10b981', '#f59e0b', '#ef4444', '#f97316', '#ec4899'];
-
 function generateTrendData(complaints) {
   const map = {};
   complaints.forEach(c => {
@@ -26,7 +24,6 @@ function generateTrendData(complaints) {
   const entries = Object.entries(map).slice(-14);
   return entries.map(([date, count]) => ({ date, count, resolved: Math.floor(count * 0.6) }));
 }
-
 function generateCategoryData(complaints) {
   const map = {};
   complaints.forEach(c => {
@@ -35,21 +32,17 @@ function generateCategoryData(complaints) {
   });
   return Object.entries(map).map(([name, value]) => ({ name, value }));
 }
-
 export default function DashboardPage() {
   const { complaints, rankedComplaints, stats, subscribeAll } = useComplaintStore();
   const { role } = useAuthStore();
   const navigate = useNavigate();
-
   useEffect(() => {
     const unsub = subscribeAll();
     return unsub;
   }, []);
-
   const trendData = generateTrendData(complaints);
   const catData = generateCategoryData(complaints);
   const topPriority = rankedComplaints.slice(0, 5);
-
   const departmentPerf = [
     { dept: 'Roads', assigned: 24, resolved: 18, rate: 75 },
     { dept: 'Water', assigned: 31, resolved: 28, rate: 90 },
@@ -57,7 +50,6 @@ export default function DashboardPage() {
     { dept: 'Health', assigned: 12, resolved: 11, rate: 92 },
     { dept: 'Sanitation', assigned: 27, resolved: 20, rate: 74 },
   ];
-
   return (
     <>
       <TopNavbar
@@ -70,7 +62,7 @@ export default function DashboardPage() {
         }
       />
       <div className="page-content animate-fadeIn">
-        {/* KPI Row */}
+        {}
         <div className="kpi-grid">
           <KpiCard label="Total Complaints" value={stats.total} icon="📋" color="var(--accent)" iconBg="var(--accent-glow)" change={12} changeType="up" />
           <KpiCard label="Pending" value={stats.pending} icon="⏳" color="var(--yellow)" iconBg="rgba(245,158,11,0.1)" change={3} changeType="up" />
@@ -78,8 +70,7 @@ export default function DashboardPage() {
           <KpiCard label="Resolved" value={stats.resolved} icon="✅" color="var(--green)" iconBg="rgba(16,185,129,0.1)" change={8} changeType="up" />
           <KpiCard label="Critical" value={stats.critical} icon="🔴" color="var(--red)" iconBg="rgba(239,68,68,0.1)" />
         </div>
-
-        {/* Charts Row */}
+        {}
         <div className="grid-2 mb-6">
           <div className="card">
             <div className="card-header">
@@ -109,7 +100,6 @@ export default function DashboardPage() {
               </ResponsiveContainer>
             </div>
           </div>
-
           <div className="card">
             <div className="card-header">
               <span className="card-title">Category Distribution</span>
@@ -129,10 +119,9 @@ export default function DashboardPage() {
             </div>
           </div>
         </div>
-
-        {/* Priority Queue + Activity */}
+        {}
         <div className="grid-2 mb-6">
-          {/* Top Priority Complaints */}
+          {}
           <div className="card">
             <div className="section-header">
               <div>
@@ -180,8 +169,7 @@ export default function DashboardPage() {
               </div>
             )}
           </div>
-
-          {/* Dept Performance */}
+          {}
           <div className="card">
             <div className="section-header">
               <div>
@@ -213,9 +201,7 @@ export default function DashboardPage() {
                 </div>
               ))}
             </div>
-
             <div className="divider" />
-
             <div className="section-header mb-0">
               <div className="section-title">📊 Volume by Category</div>
             </div>
@@ -232,8 +218,7 @@ export default function DashboardPage() {
             </div>
           </div>
         </div>
-
-        {/* Recent Activity */}
+        {}
         <div className="card">
           <div className="section-header">
             <div className="section-title">⚡ Live Activity Feed</div>

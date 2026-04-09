@@ -1,9 +1,7 @@
 import { Bell, Search, RefreshCw, Download } from 'lucide-react';
 import useAuthStore from '../stores/authStore';
-
 export default function TopNavbar({ title, subtitle, actions }) {
   const { profile, role } = useAuthStore();
-
   return (
     <header className="top-navbar">
       <div className="navbar-left">

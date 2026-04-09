@@ -2,10 +2,6 @@ import {
   LS, type Citizen, type DepartmentUser, type Worker, type Complaint
 } from './types'
 import { computePriorityScore } from './priorityEngine'
-
-// ============================
-// Generic Storage Helpers
-// ============================
 export function lsGet<T>(key: string, fallback: T): T {
   try { const v = localStorage.getItem(key); return v ? JSON.parse(v) : fallback }
   catch { return fallback }
@@ -13,25 +9,13 @@ export function lsGet<T>(key: string, fallback: T): T {
 export function lsSet<T>(key: string, value: T) {
   localStorage.setItem(key, JSON.stringify(value))
 }
-
-// ============================
-// ID Generator
-// ============================
 export function newId() { return `${Date.now().toString(36).toUpperCase()}-${Math.random().toString(36).slice(2,6).toUpperCase()}` }
-
-// ============================
-// Seed Data — runs once
-// ============================
 export function seedIfNeeded() {
   if (lsGet(LS.SEEDED, false)) return
-
-  // Citizens
   const citizens: Citizen[] = [
     { id: 'CIT-001', name: 'Rahul Sharma', mobile: '9876543210', email: 'rahul@citizen.in', password: 'pass123', role: 'citizen', createdAt: daysAgo(10) },
     { id: 'CIT-002', name: 'Priya Patel', mobile: '9812345678', email: 'priya@citizen.in', password: 'pass123', role: 'citizen', createdAt: daysAgo(8) },
   ]
-
-  // Department users
   const deptUsers: DepartmentUser[] = [
     { id: 'DEPT-001', department: 'Water Supply',          email: 'water@dept.gov',     password: 'dept123', role: 'department', createdAt: daysAgo(30) },
     { id: 'DEPT-002', department: 'Garbage & Sanitation',  email: 'garbage@dept.gov',   password: 'dept123', role: 'department', createdAt: daysAgo(30) },
@@ -40,8 +24,6 @@ export function seedIfNeeded() {
     { id: 'DEPT-005', department: 'Public Transport',      email: 'transport@dept.gov', password: 'dept123', role: 'department', createdAt: daysAgo(30) },
     { id: 'DEPT-006', department: 'Traffic Management',    email: 'traffic@dept.gov',   password: 'dept123', role: 'department', createdAt: daysAgo(30) },
   ]
-
-  // Workers — 2 per key department
   const workers: Worker[] = [
     { id: 'WRK-001', name: 'Ajay Verma', email: 'ajay@water.gov', password: 'work123', employeeId: 'EMP-W01', department: 'Water Supply', role: 'worker', createdAt: daysAgo(20) },
     { id: 'WRK-002', name: 'Suresh Nair', email: 'suresh@water.gov', password: 'work123', employeeId: 'EMP-W02', department: 'Water Supply', role: 'worker', createdAt: daysAgo(19) },
@@ -52,8 +34,6 @@ export function seedIfNeeded() {
     { id: 'WRK-007', name: 'Kiran Roy', email: 'kiran@garbage.gov', password: 'work123', employeeId: 'EMP-G01', department: 'Garbage & Sanitation', role: 'worker', createdAt: daysAgo(14) },
     { id: 'WRK-008', name: 'Lata Mishra', email: 'lata@garbage.gov', password: 'work123', employeeId: 'EMP-G02', department: 'Garbage & Sanitation', role: 'worker', createdAt: daysAgo(13) },
   ]
-
-  // Complaints
   const c1: Complaint = {
     id: 'CMP-001', title: 'Water pipe burst near school',
     description: 'A major water pipe has burst at the junction near Blue Star School, causing road flooding.',
@@ -69,7 +49,6 @@ export function seedIfNeeded() {
     ],
     createdAt: daysAgo(5), updatedAt: daysAgo(2),
   }
-
   const c2: Complaint = {
     id: 'CMP-002', title: 'Large pothole on MG Road causing accidents',
     description: 'A dangerous 2-foot wide pothole has appeared on MG Road near the traffic signal. Vehicles are swerving dangerously.',
@@ -84,7 +63,6 @@ export function seedIfNeeded() {
     ],
     createdAt: daysAgo(3), updatedAt: daysAgo(1),
   }
-
   const c3: Complaint = {
     id: 'CMP-003', title: 'Streetlights not working in colony',
     description: 'All streetlights in Sector 9 colony have been non-functional for 4 days. Area is unsafe at night.',
@@ -96,7 +74,6 @@ export function seedIfNeeded() {
     ],
     createdAt: daysAgo(1), updatedAt: daysAgo(1),
   }
-
   const c4: Complaint = {
     id: 'CMP-004', title: 'Garbage overflowing at market area',
     description: 'Garbage bins near the local market have not been cleared for a week. Causing foul smell and health hazards.',
@@ -114,35 +91,26 @@ export function seedIfNeeded() {
     ],
     createdAt: daysAgo(7), updatedAt: daysAgo(2), resolvedAt: daysAgo(2),
   }
-
   lsSet(LS.CITIZENS, citizens)
   lsSet(LS.DEPARTMENT_USERS, deptUsers)
   lsSet(LS.WORKERS, workers)
   lsSet(LS.COMPLAINTS, [c1, c2, c3, c4])
   lsSet(LS.SEEDED, true)
 }
-
 function daysAgo(n: number) {
   const d = new Date()
   d.setDate(d.getDate() - n)
   return d.toISOString()
 }
-
-// ============================
-// CRUD Helpers
-// ============================
 export function getComplaints(): Complaint[] { return lsGet<Complaint[]>(LS.COMPLAINTS, []) }
 export function saveComplaints(c: Complaint[]) { lsSet(LS.COMPLAINTS, c) }
-
 export function addComplaint(data: Omit<Complaint, 'id' | 'createdAt' | 'updatedAt' | 'timeline' | 'status'>) {
   const complaints = getComplaints()
   const id = `CMP-${String(complaints.length + 1).padStart(3, '0')}-${newId().slice(0,4)}`
   const now = new Date().toISOString()
-  // Auto-compute AI priority score if not already provided (e.g. from frontend Groq API)
   const computed = computePriorityScore(data.title, data.description, data.category)
   const finalScore = data.priorityScore ?? computed.score
   const finalLevel = data.priority ?? computed.level
-
   const complaint: Complaint = {
     ...data,
     id,
@@ -157,7 +125,6 @@ export function addComplaint(data: Omit<Complaint, 'id' | 'createdAt' | 'updated
   saveComplaints(complaints)
   return complaint
 }
-
 export function updateComplaint(id: string, updates: Partial<Complaint>, statusNote?: { note: string; by: string }) {
   const complaints = getComplaints()
   const idx = complaints.findIndex(c => c.id === id)
@@ -173,11 +140,9 @@ export function updateComplaint(id: string, updates: Partial<Complaint>, statusN
   saveComplaints(complaints)
   return complaints[idx]
 }
-
 export function getCitizens(): Citizen[] { return lsGet<Citizen[]>(LS.CITIZENS, []) }
 export function getDeptUsers(): DepartmentUser[] { return lsGet<DepartmentUser[]>(LS.DEPARTMENT_USERS, []) }
 export function getWorkers(): Worker[] { return lsGet<Worker[]>(LS.WORKERS, []) }
-
 export function addCitizen(data: Omit<Citizen, 'id' | 'role' | 'createdAt'>) {
   const citizens = getCitizens()
   const citizen: Citizen = { ...data, id: `CIT-${newId()}`, role: 'citizen', createdAt: new Date().toISOString() }
@@ -185,7 +150,6 @@ export function addCitizen(data: Omit<Citizen, 'id' | 'role' | 'createdAt'>) {
   lsSet(LS.CITIZENS, citizens)
   return citizen
 }
-
 export function addWorker(data: Omit<Worker, 'id' | 'role' | 'createdAt'>) {
   const workers = getWorkers()
   const worker: Worker = { ...data, id: `WRK-${newId()}`, role: 'worker', createdAt: new Date().toISOString() }
@@ -193,13 +157,11 @@ export function addWorker(data: Omit<Worker, 'id' | 'role' | 'createdAt'>) {
   lsSet(LS.WORKERS, workers)
   return worker
 }
-
 export function isOverdue(complaint: Complaint): boolean {
   if (complaint.status === 'Resolved' || complaint.status === 'Closed') return false
   const created = new Date(complaint.createdAt).getTime()
   return (Date.now() - created) > 3 * 24 * 60 * 60 * 1000
 }
-
 export function timeAgo(iso: string) {
   const diff = Date.now() - new Date(iso).getTime()
   const mins = Math.floor(diff / 60000)

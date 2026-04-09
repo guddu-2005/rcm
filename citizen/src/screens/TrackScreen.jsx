@@ -2,13 +2,10 @@ import { useEffect, useState } from 'react';
 import { collection, query, where, onSnapshot } from 'firebase/firestore';
 import { db } from '../firebase';
 import useStore from '../store';
-
 const STAGES = ['submitted', 'underReview', 'assigned', 'inProgress', 'resolved'];
 const STAGE_LABELS = { submitted: 'Submitted', underReview: 'Under Review', assigned: 'Assigned', inProgress: 'In Progress', resolved: 'Resolved' };
 const STAGE_ICONS = { submitted: '📝', underReview: '🔍', assigned: '👤', inProgress: '🔧', resolved: '✅' };
-
 const CAT_ICONS = { water: '💧', electricity: '⚡', road: '🛣️', health: '🏥', sanitation: '🗑️', fire: '🔥', flood: '🌊', crime: '🚨', other: '📋', gas: '💨' };
-
 function timeAgo(ts) {
   if (!ts) return '';
   const d = ts.seconds ? new Date(ts.seconds * 1000) : new Date(ts);
@@ -19,13 +16,11 @@ function timeAgo(ts) {
   if (h < 24) return `${h}h ago`;
   return `${Math.floor(h / 24)}d ago`;
 }
-
 export default function TrackScreen() {
   const { user } = useStore();
   const [complaints, setComplaints] = useState([]);
   const [selected, setSelected] = useState(null);
   const [loading, setLoading] = useState(true);
-
   useEffect(() => {
     if (!user) return;
     const q = query(
@@ -39,7 +34,6 @@ export default function TrackScreen() {
       setLoading(false);
     }, () => setLoading(false));
   }, [user]);
-
   if (selected) {
     const c = selected;
     const stageIdx = STAGES.indexOf(c.status);
@@ -50,7 +44,7 @@ export default function TrackScreen() {
           <div className="topbar-title">Track Complaint</div>
         </div>
         <div className="page">
-          {/* Ticket Header */}
+          {}
           <div style={{ background: 'linear-gradient(135deg, rgba(124,58,237,0.12), rgba(59,130,246,0.06))', border: '1px solid var(--border)', borderRadius: 16, padding: 18, marginBottom: 16 }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
               <div>
@@ -64,8 +58,7 @@ export default function TrackScreen() {
               {CAT_ICONS[c.category] || '📋'} {c.category} · 📍 {c.location?.area} · {timeAgo(c.createdAt)}
             </div>
           </div>
-
-          {/* Timeline */}
+          {}
           <div style={{ background: 'var(--card)', border: '1px solid var(--border)', borderRadius: 16, padding: 18, marginBottom: 16 }}>
             <div style={{ fontWeight: 700, fontSize: 15, marginBottom: 16 }}>Status Timeline</div>
             <div className="timeline">
@@ -90,24 +83,21 @@ export default function TrackScreen() {
               })}
             </div>
           </div>
-
-          {/* Details */}
+          {}
           {c.description && (
             <div style={{ background: 'var(--card)', border: '1px solid var(--border)', borderRadius: 16, padding: 18, marginBottom: 16 }}>
               <div style={{ fontWeight: 700, marginBottom: 8 }}>Description</div>
               <p style={{ fontSize: 14, color: 'var(--text2)', lineHeight: 1.6 }}>{c.description}</p>
             </div>
           )}
-
-          {/* Duplicate Info */}
+          {}
           {c.reportCount > 1 && (
             <div className="alert alert-warn">
               <span>🔁</span>
               <span>This complaint has been reported by <strong>{c.reportCount} citizens</strong>. High collective priority!</span>
             </div>
           )}
-
-          {/* Assignment Info */}
+          {}
           {c.assignedTo && (
             <div className="alert alert-info mt-3">
               <span>👤</span>
@@ -117,8 +107,7 @@ export default function TrackScreen() {
               </div>
             </div>
           )}
-
-          {/* Media */}
+          {}
           {(c.media || []).length > 0 && (
             <div style={{ background: 'var(--card)', border: '1px solid var(--border)', borderRadius: 16, padding: 18, marginTop: 12 }}>
               <div style={{ fontWeight: 700, marginBottom: 12 }}>Attached Photos</div>
@@ -135,7 +124,6 @@ export default function TrackScreen() {
       </div>
     );
   }
-
   return (
     <div className="screen">
       <div className="topbar">
@@ -181,8 +169,7 @@ export default function TrackScreen() {
                     <span style={{ fontSize: 11, color: 'var(--text3)' }}>Tap to track →</span>
                   </div>
                 </div>
-
-                {/* Mini timeline */}
+                {}
                 <div style={{ display: 'flex', alignItems: 'center', gap: 4, marginTop: 12 }}>
                   {STAGES.map((s, i) => {
                     const stIdx = STAGES.indexOf(c.status);

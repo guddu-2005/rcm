@@ -2,24 +2,20 @@ import { useStore } from '../../store'
 import { getWorkers } from '../../storage'
 import { Avatar, EmptyState } from '../../components/ui'
 import { HardHat } from 'lucide-react'
-
 export default function WorkerPanel() {
   const { complaints } = useStore()
   const workers = getWorkers()
-
   const workerStats = workers.map(w => {
     const assigned = complaints.filter(c => c.assignedWorkerId === w.id)
     const resolved = assigned.filter(c => c.status === 'Resolved' || c.status === 'Closed')
     return { ...w, assigned: assigned.length, resolved: resolved.length, rate: assigned.length ? Math.round((resolved.length / assigned.length) * 100) : 0 }
   })
-
   return (
     <div>
       <div className="mb-6">
         <h1 className="font-display text-2xl font-bold text-gray-900 mb-1">Worker Panel</h1>
         <p className="text-sm text-gray-500">{workers.length} registered field workers</p>
       </div>
-
       {workers.length === 0 ? (
         <div className="cs-card"><EmptyState icon={<HardHat size={28} />} title="No workers registered" sub="Workers can register via the Worker portal." /></div>
       ) : (

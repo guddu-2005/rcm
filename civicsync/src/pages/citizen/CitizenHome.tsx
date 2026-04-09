@@ -3,21 +3,17 @@ import { useStore } from '../../store'
 import { StatusBadge, PriorityBadge, EmptyState } from '../../components/ui'
 import { FilePlus, Clock, CheckCircle, AlertCircle, TrendingUp, ArrowRight } from 'lucide-react'
 import { timeAgo } from '../../storage'
-
 export default function CitizenHome() {
   const { session, complaints: allComplaints } = useStore()
   const navigate = useNavigate()
   const complaints = allComplaints.filter(c => c.citizenId === session?.userId)
-
   const stats = [
     { label: 'Total Filed', val: complaints.length, icon: <TrendingUp size={18} />, color: 'text-blue-600', bg: 'bg-blue-50' },
     { label: 'Active', val: complaints.filter(c => !['Resolved','Closed'].includes(c.status)).length, icon: <Clock size={18} />, color: 'text-amber-600', bg: 'bg-amber-50' },
     { label: 'Resolved', val: complaints.filter(c => c.status === 'Resolved' || c.status === 'Closed').length, icon: <CheckCircle size={18} />, color: 'text-green-600', bg: 'bg-green-50' },
     { label: 'Critical', val: complaints.filter(c => c.priority === 'High' && c.status !== 'Resolved').length, icon: <AlertCircle size={18} />, color: 'text-red-600', bg: 'bg-red-50' },
   ]
-
   const recent = [...complaints].sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()).slice(0, 5)
-
   return (
     <div>
       <div className="flex items-start justify-between mb-8">
@@ -32,8 +28,7 @@ export default function CitizenHome() {
           <FilePlus size={15} /> New Complaint
         </button>
       </div>
-
-      {/* Stats */}
+      {}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
         {stats.map(({ label, val, icon, color, bg }) => (
           <div key={label} className="cs-card">
@@ -45,8 +40,7 @@ export default function CitizenHome() {
           </div>
         ))}
       </div>
-
-      {/* Recent Complaints */}
+      {}
       <div className="cs-card">
         <div className="flex items-center justify-between mb-5">
           <h2 className="font-display font-bold text-gray-900">Recent Complaints</h2>
@@ -55,7 +49,6 @@ export default function CitizenHome() {
             View All <ArrowRight size={12} />
           </button>
         </div>
-
         {recent.length === 0 ? (
           <EmptyState icon={<FilePlus size={28} />} title="No complaints yet" sub="File your first complaint and track its resolution." />
         ) : (

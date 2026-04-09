@@ -6,14 +6,12 @@ import {
   onAuthStateChanged,
 } from 'firebase/auth';
 import { doc, getDoc } from 'firebase/firestore';
-
 const useAuthStore = create((set, get) => ({
   user: null,
   profile: null,
   role: null,
   loading: true,
   error: null,
-
   init: () => {
     const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
       if (firebaseUser) {
@@ -36,7 +34,6 @@ const useAuthStore = create((set, get) => ({
     });
     return unsubscribe;
   },
-
   login: async (email, password) => {
     set({ loading: true, error: null });
     try {
@@ -46,11 +43,9 @@ const useAuthStore = create((set, get) => ({
       throw err;
     }
   },
-
   logout: async () => {
     await signOut(auth);
     set({ user: null, profile: null, role: null });
   },
 }));
-
 export default useAuthStore;

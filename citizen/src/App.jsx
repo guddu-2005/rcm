@@ -7,24 +7,20 @@ import SubmitScreen from './screens/SubmitScreen';
 import TrackScreen from './screens/TrackScreen';
 import ProfileScreen from './screens/ProfileScreen';
 import TicketScreen from './screens/TicketScreen';
-
 const TABS = [
   { id: 'home', icon: '🏠', label: 'Home' },
   { id: 'track', icon: '📍', label: 'Track' },
   { id: 'profile', icon: '👤', label: 'Profile' },
 ];
-
 export default function App() {
   const { user, loading, init, activeTab, setTab } = useStore();
-  const [screen, setScreen] = useState('main'); // main | submit | ticket
+  const [screen, setScreen] = useState('main');
   const [ticketData, setTicketData] = useState(null);
   const [viewingComplaint, setViewingComplaint] = useState(null);
-
   useEffect(() => {
     const unsub = init();
     return unsub;
   }, []);
-
   if (loading) {
     return (
       <div className="loading-screen">
@@ -36,14 +32,12 @@ export default function App() {
       </div>
     );
   }
-
   if (!user) return (
     <>
       <Toaster position="top-center" toastOptions={{ style: { background: '#1e1e2e', color: '#f1f1f5', border: '1px solid rgba(255,255,255,0.07)', fontSize: 14 } }} />
       <AuthScreen />
     </>
   );
-
   if (screen === 'submit') {
     return (
       <>
@@ -57,7 +51,6 @@ export default function App() {
       </>
     );
   }
-
   if (screen === 'ticket') {
     return (
       <>
@@ -72,12 +65,11 @@ export default function App() {
       </>
     );
   }
-
   return (
     <>
       <Toaster position="top-center" toastOptions={{ style: { background: '#1e1e2e', color: '#f1f1f5', border: '1px solid rgba(255,255,255,0.07)', fontSize: 14 } }} />
       <div className="app">
-        {/* Main Content */}
+        {}
         {activeTab === 'home' && (
           <HomeScreen
             onNewComplaint={() => setScreen('submit')}
@@ -86,15 +78,13 @@ export default function App() {
         )}
         {activeTab === 'track' && <TrackScreen />}
         {activeTab === 'profile' && <ProfileScreen />}
-
-        {/* FAB for submit */}
+        {}
         {activeTab === 'home' && (
           <button className="fab" onClick={() => setScreen('submit')} title="Submit New Complaint">
             +
           </button>
         )}
-
-        {/* Bottom Nav */}
+        {}
         <nav className="bottom-nav">
           {TABS.map(tab => (
             <button

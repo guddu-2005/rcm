@@ -15,14 +15,12 @@ import {
 } from 'firebase/firestore';
 import { db } from '../firebase';
 import { rankComplaints } from '../intelligence/priorityEngine';
-
 const useComplaintStore = create((set, get) => ({
   complaints: [],
   rankedComplaints: [],
   stats: { total: 0, pending: 0, resolved: 0, critical: 0, inProgress: 0 },
   loading: true,
   departmentFilter: null,
-
   subscribeAll: () => {
     const q = query(
       collection(db, 'complaints'),
@@ -45,7 +43,6 @@ const useComplaintStore = create((set, get) => ({
     });
     return unsubscribe;
   },
-
   subscribeByDept: (departmentId) => {
     const q = query(
       collection(db, 'complaints'),
@@ -66,7 +63,6 @@ const useComplaintStore = create((set, get) => ({
     }, () => set({ loading: false }));
     return unsubscribe;
   },
-
   updateStatus: async (complaintId, status, note, adminName) => {
     const ref = doc(db, 'complaints', complaintId);
     const timeline = {
@@ -80,7 +76,6 @@ const useComplaintStore = create((set, get) => ({
       updatedAt: serverTimestamp(),
       [`timeline.${Date.now()}`]: timeline,
     });
-    // Add notification
     const snap = await getDoc(ref);
     if (snap.exists() && snap.data().userId) {
       await addDoc(collection(db, 'notifications'), {
@@ -93,7 +88,6 @@ const useComplaintStore = create((set, get) => ({
       });
     }
   },
-
   assignComplaint: async (complaintId, assignee, deadline, notes) => {
     const ref = doc(db, 'complaints', complaintId);
     await updateDoc(ref, {
@@ -104,7 +98,6 @@ const useComplaintStore = create((set, get) => ({
       updatedAt: serverTimestamp(),
     });
   },
-
   escalateComplaint: async (complaintId, reason) => {
     const ref = doc(db, 'complaints', complaintId);
     await updateDoc(ref, {
@@ -114,7 +107,6 @@ const useComplaintStore = create((set, get) => ({
       updatedAt: serverTimestamp(),
     });
   },
-
   addAdminComplaint: async (data) => {
     const ticketId = 'ADM-' + Date.now().toString(36).toUpperCase();
     await addDoc(collection(db, 'complaints'), {
@@ -127,5 +119,4 @@ const useComplaintStore = create((set, get) => ({
     });
   },
 }));
-
 export default useComplaintStore;

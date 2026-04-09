@@ -6,9 +6,7 @@ import {
   PieChart, Pie, Cell, RadarChart, Radar, PolarGrid, PolarAngleAxis,
   XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend
 } from 'recharts';
-
 const COLORS = ['#8b5cf6', '#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#f97316', '#06b6d4', '#ec4899'];
-
 function buildResolutionTrend(complaints) {
   const days = {};
   for (let i = 29; i >= 0; i--) {
@@ -28,7 +26,6 @@ function buildResolutionTrend(complaints) {
   });
   return Object.values(days);
 }
-
 function buildCategoryBreakdown(complaints) {
   const map = {};
   complaints.forEach(c => {
@@ -40,7 +37,6 @@ function buildCategoryBreakdown(complaints) {
   });
   return Object.values(map).sort((a, b) => b.submitted - a.submitted);
 }
-
 function buildSeverityData(complaints) {
   const map = { critical: 0, high: 0, medium: 0, low: 0 };
   complaints.forEach(c => {
@@ -49,7 +45,6 @@ function buildSeverityData(complaints) {
   });
   return Object.entries(map).map(([name, value]) => ({ name, value }));
 }
-
 function buildHourlyDistribution(complaints) {
   const hours = Array.from({ length: 24 }, (_, h) => ({ hour: `${h}:00`, count: 0 }));
   complaints.forEach(c => {
@@ -58,15 +53,12 @@ function buildHourlyDistribution(complaints) {
   });
   return hours;
 }
-
 export default function AnalyticsPage() {
   const { complaints, subscribeAll } = useComplaintStore();
-
   useEffect(() => {
     const unsub = subscribeAll();
     return unsub;
   }, []);
-
   const trendData = buildResolutionTrend(complaints);
   const catData = buildCategoryBreakdown(complaints);
   const severityData = buildSeverityData(complaints);
@@ -78,14 +70,12 @@ export default function AnalyticsPage() {
   const avgScore = complaints.length > 0
     ? Math.round(complaints.reduce((acc, c) => acc + (c.priorityScore || 0), 0) / complaints.length)
     : 0;
-
   const tooltip = { contentStyle: { background: '#16161e', border: '1px solid rgba(255,255,255,0.06)', borderRadius: 8, fontSize: 12 } };
-
   return (
     <>
       <TopNavbar title="Analytics & Insights" subtitle={`Trend analysis over ${complaints.length} complaints`} />
       <div className="page-content animate-fadeIn">
-        {/* Summary KPIs */}
+        {}
         <div className="kpi-grid mb-6">
           {[
             { label: 'Resolution Rate', value: `${resolutionRate}%`, icon: '✅', color: 'var(--green)' },
@@ -100,8 +90,7 @@ export default function AnalyticsPage() {
             </div>
           ))}
         </div>
-
-        {/* 30-Day Trend */}
+        {}
         <div className="card mb-6">
           <div className="card-header">
             <span className="card-title">30-Day Complaint Trend</span>
@@ -130,9 +119,8 @@ export default function AnalyticsPage() {
             </ResponsiveContainer>
           </div>
         </div>
-
         <div className="grid-2 mb-6">
-          {/* Category Breakdown */}
+          {}
           <div className="card">
             <div className="card-header"><span className="card-title">Category Breakdown</span></div>
             <div style={{ height: 250 }}>
@@ -149,8 +137,7 @@ export default function AnalyticsPage() {
               </ResponsiveContainer>
             </div>
           </div>
-
-          {/* Severity Pie */}
+          {}
           <div className="card">
             <div className="card-header"><span className="card-title">Severity Distribution</span></div>
             <div style={{ height: 250 }}>
@@ -168,9 +155,8 @@ export default function AnalyticsPage() {
             </div>
           </div>
         </div>
-
         <div className="grid-2 mb-6">
-          {/* Hourly Distribution */}
+          {}
           <div className="card">
             <div className="card-header"><span className="card-title">Submission by Hour</span></div>
             <div style={{ height: 220 }}>
@@ -185,8 +171,7 @@ export default function AnalyticsPage() {
               </ResponsiveContainer>
             </div>
           </div>
-
-          {/* Radar Chart */}
+          {}
           <div className="card">
             <div className="card-header"><span className="card-title">Category Radar</span></div>
             <div style={{ height: 220 }}>
@@ -203,8 +188,7 @@ export default function AnalyticsPage() {
             </div>
           </div>
         </div>
-
-        {/* Category Table */}
+        {}
         <div className="card">
           <div className="card-header"><span className="card-title">Category Performance Table</span></div>
           <table className="data-table">

@@ -12,7 +12,6 @@ import AnalyticsPage from './pages/AnalyticsPage';
 import HeatmapPage from './pages/HeatmapPage';
 import DepartmentsPage from './pages/DepartmentsPage';
 import NewComplaintPage from './pages/NewComplaintPage';
-
 function ProtectedRoute({ children, allowedRoles }) {
   const { user, role, loading } = useAuthStore();
   if (loading) return <div className="loading-screen"><div className="spinner" /></div>;
@@ -20,7 +19,6 @@ function ProtectedRoute({ children, allowedRoles }) {
   if (allowedRoles && !allowedRoles.includes(role)) return <Navigate to="/dashboard" replace />;
   return children;
 }
-
 function AppLayout({ children }) {
   return (
     <div className="app-layout">
@@ -29,15 +27,12 @@ function AppLayout({ children }) {
     </div>
   );
 }
-
 export default function App() {
   const init = useAuthStore(s => s.init);
-
   useEffect(() => {
     const unsub = init();
     return unsub;
   }, []);
-
   return (
     <BrowserRouter>
       <Toaster
@@ -56,55 +51,46 @@ export default function App() {
       <Routes>
         <Route path="/login" element={<LoginPage />} />
         <Route path="/" element={<Navigate to="/dashboard" replace />} />
-
         <Route path="/dashboard" element={
           <ProtectedRoute>
             <AppLayout><DashboardPage /></AppLayout>
           </ProtectedRoute>
         } />
-
         <Route path="/complaints" element={
           <ProtectedRoute>
             <AppLayout><ComplaintsPage /></AppLayout>
           </ProtectedRoute>
         } />
-
         <Route path="/complaints/new" element={
           <ProtectedRoute>
             <AppLayout><NewComplaintPage /></AppLayout>
           </ProtectedRoute>
         } />
-
         <Route path="/complaints/:id" element={
           <ProtectedRoute>
             <AppLayout><ComplaintDetailPage /></AppLayout>
           </ProtectedRoute>
         } />
-
         <Route path="/priority" element={
           <ProtectedRoute>
             <AppLayout><PriorityQueuePage /></AppLayout>
           </ProtectedRoute>
         } />
-
         <Route path="/analytics" element={
           <ProtectedRoute>
             <AppLayout><AnalyticsPage /></AppLayout>
           </ProtectedRoute>
         } />
-
         <Route path="/heatmap" element={
           <ProtectedRoute allowedRoles={['superAdmin', 'admin']}>
             <AppLayout><HeatmapPage /></AppLayout>
           </ProtectedRoute>
         } />
-
         <Route path="/departments" element={
           <ProtectedRoute allowedRoles={['superAdmin', 'admin']}>
             <AppLayout><DepartmentsPage /></AppLayout>
           </ProtectedRoute>
         } />
-
         <Route path="/audit" element={
           <ProtectedRoute allowedRoles={['superAdmin']}>
             <AppLayout>
@@ -116,7 +102,6 @@ export default function App() {
             </AppLayout>
           </ProtectedRoute>
         } />
-
         <Route path="/users" element={
           <ProtectedRoute allowedRoles={['superAdmin']}>
             <AppLayout>
@@ -128,7 +113,6 @@ export default function App() {
             </AppLayout>
           </ProtectedRoute>
         } />
-
         <Route path="/settings" element={
           <ProtectedRoute>
             <AppLayout>
@@ -140,7 +124,6 @@ export default function App() {
             </AppLayout>
           </ProtectedRoute>
         } />
-
         <Route path="*" element={<Navigate to="/dashboard" replace />} />
       </Routes>
     </BrowserRouter>

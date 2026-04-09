@@ -6,7 +6,6 @@ import IncomingComplaints from './IncomingComplaints'
 import AssignToWorker from './AssignToWorker'
 import MyWorkers from './MyWorkers'
 import SLATracker from './SLATracker'
-
 const navItems = [
   { label: 'Dashboard Overview', href: '/department/dashboard', icon: <LayoutDashboard size={17} /> },
   { label: 'Incoming Complaints', href: '/department/dashboard/incoming', icon: <Inbox size={17} /> },
@@ -14,7 +13,6 @@ const navItems = [
   { label: 'My Workers', href: '/department/dashboard/workers', icon: <Users size={17} /> },
   { label: 'SLA Tracker', href: '/department/dashboard/sla', icon: <Timer size={17} /> },
 ]
-
 export default function DepartmentPortal() {
   return (
     <SidebarShell title="Department" subtitle="Department Portal" navItems={navItems} accentColor="bg-green-700">

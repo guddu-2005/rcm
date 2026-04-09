@@ -2,7 +2,6 @@ import { useEffect, useMemo } from 'react';
 import useComplaintStore from '../stores/complaintStore';
 import TopNavbar from '../components/TopNavbar';
 import { calculatePriorityScore } from '../intelligence/priorityEngine';
-
 const AREA_GRID = [
   'Sector 1', 'Sector 2', 'Old Town', 'Market Area', 'Station Road',
   'Ashok Nagar', 'Gandhi Nagar', 'Lake Area', 'Industrial Zone', 'Hospital Zone',
@@ -12,16 +11,12 @@ const AREA_GRID = [
   'South Camp', 'Central Park', 'River Bank', 'Tech Park', 'Heritage Zone',
   'Green Belt', 'Sports Complex', 'Residential A', 'Residential B', 'Slum Area',
 ];
-
 export default function HeatmapPage() {
   const { complaints, subscribeAll } = useComplaintStore();
-
   useEffect(() => {
     const unsub = subscribeAll();
     return unsub;
   }, []);
-
-  // Build area → count map
   const areaMap = useMemo(() => {
     const map = {};
     complaints.forEach(c => {
@@ -30,9 +25,7 @@ export default function HeatmapPage() {
     });
     return map;
   }, [complaints]);
-
   const maxCount = Math.max(...Object.values(areaMap), 1);
-
   const getIntensity = (count) => {
     if (!count) return 0;
     const ratio = count / maxCount;
@@ -41,20 +34,15 @@ export default function HeatmapPage() {
     if (ratio > 0.25) return 2;
     return 1;
   };
-
-  // Top hotspots
   const hotspots = Object.entries(areaMap)
     .sort((a, b) => b[1] - a[1])
     .slice(0, 10)
     .map(([area, count]) => ({ area, count }));
-
-  // Assign counts to grid
   const gridData = AREA_GRID.map(area => ({
     area,
     count: areaMap[area] || 0,
     intensity: getIntensity(areaMap[area] || 0),
   }));
-
   const categoryHotspots = useMemo(() => {
     const map = {};
     complaints.forEach(c => {
@@ -65,7 +53,6 @@ export default function HeatmapPage() {
     });
     return map;
   }, [complaints]);
-
   return (
     <>
       <TopNavbar
@@ -74,7 +61,7 @@ export default function HeatmapPage() {
       />
       <div className="page-content animate-fadeIn">
         <div className="grid-2 mb-6" style={{ gap: 20 }}>
-          {/* Heatmap Grid */}
+          {}
           <div className="card">
             <div className="card-header">
               <span className="card-title">Area Density Map</span>
@@ -123,8 +110,7 @@ export default function HeatmapPage() {
               💡 Hover over cells to see area names and complaint counts
             </div>
           </div>
-
-          {/* Top Hotspots */}
+          {}
           <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
             <div className="card">
               <div className="card-header"><span className="card-title">🔥 Top Hotspot Areas</span></div>
@@ -151,8 +137,7 @@ export default function HeatmapPage() {
                 </div>
               )}
             </div>
-
-            {/* Category by area */}
+            {}
             {hotspots.length > 0 && (
               <div className="card">
                 <div className="card-header"><span className="card-title">Issue Types in Top Areas</span></div>
@@ -173,8 +158,7 @@ export default function HeatmapPage() {
             )}
           </div>
         </div>
-
-        {/* Area Table */}
+        {}
         <div className="card">
           <div className="card-header"><span className="card-title">All Areas – Complaint Count</span></div>
           <table className="data-table">

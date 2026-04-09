@@ -2,13 +2,11 @@ import { useStore } from '../../store'
 import { getCitizens, getComplaints } from '../../storage'
 import { Avatar } from '../../components/ui'
 import { Phone, Mail, CheckCircle, FileText } from 'lucide-react'
-
 export default function CitizenProfile() {
   const { session } = useStore()
   const citizens = getCitizens()
   const citizen = citizens.find(c => c.id === session?.userId)
   const myComplaints = getComplaints().filter(c => c.citizenId === session?.userId)
-
   return (
     <div className="max-w-xl">
       <h1 className="font-display text-2xl font-bold text-gray-900 mb-6">My Profile</h1>

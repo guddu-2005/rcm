@@ -8,9 +8,7 @@ import toast from 'react-hot-toast'
 import { timeAgo } from '../../storage'
 import { scanAllDuplicates, type DuplicateGroup } from '../../dedup'
 import { computePriorityScore, scoreColor, scoreBg, scoreLabel } from '../../priorityEngine'
-
 const STATUSES: ComplaintStatus[] = ['Submitted', 'Verified', 'Assigned', 'In Progress', 'Resolved', 'Closed']
-
 export default function AllComplaints() {
   const { complaints, refreshComplaints, adminCommandData, setAdminCommandData } = useStore()
   const [search, setSearch] = useState('')
@@ -20,8 +18,6 @@ export default function AllComplaints() {
   const [updatingId, setUpdatingId] = useState<string | null>(null)
   const [dupGroups, setDupGroups] = useState<DuplicateGroup[] | null>(null)
   const [scanning, setScanning] = useState(false)
-
-  // ── Dedup scan ──────────────────────────────────────────────
   const runDedupScan = async () => {
     setScanning(true)
     await new Promise(r => setTimeout(r, 700))
@@ -31,7 +27,6 @@ export default function AllComplaints() {
     setScanning(false)
     if (groups.length === 0) toast.success('✅ No duplicates found! All complaints are unique.')
   }
-
   const deleteDuplicates = (groups: DuplicateGroup[]) => {
     const all = getComplaints()
     const idsToDelete = new Set(groups.flatMap(g => g.duplicates.map(d => d.id)))
@@ -42,32 +37,24 @@ export default function AllComplaints() {
     setDupGroups(null)
     toast.success(`🗑️ Deleted ${count} duplicate complaint${count > 1 ? 's' : ''}. Platform cleaned up!`)
   }
-
-  // Voice Command Listener for Admin
   useEffect(() => {
     if (adminCommandData) {
       if (adminCommandData.searchQuery !== undefined) setSearch(adminCommandData.searchQuery)
       if (adminCommandData.filterStatus) setFilterStatus(adminCommandData.filterStatus)
       if (adminCommandData.filterPriority) setFilterPriority(adminCommandData.filterPriority)
       if (adminCommandData.filterDept) setFilterDept(adminCommandData.filterDept)
-      
       if (adminCommandData.runDedup) {
-        // Run dedup async 
         runDedupScan()
       }
-      
       setAdminCommandData(null)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [adminCommandData])
-
   const filtered = complaints
     .filter(c => filterStatus === 'All' || c.status === filterStatus)
     .filter(c => filterPriority === 'All' || c.priority === filterPriority)
     .filter(c => filterDept === 'All' || c.department === filterDept)
     .filter(c => !search || c.title.toLowerCase().includes(search.toLowerCase()) || c.id.toLowerCase().includes(search.toLowerCase()) || c.citizenName.toLowerCase().includes(search.toLowerCase()))
     .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
-
   const handleStatusChange = async (id: string, status: ComplaintStatus, by = 'Admin') => {
     setUpdatingId(id)
     updateComplaint(id, { status }, { note: `Status changed to ${status} by Admin.`, by })
@@ -75,7 +62,6 @@ export default function AllComplaints() {
     toast.success(`Status updated to "${status}"`)
     setUpdatingId(null)
   }
-
   const handleAssignWorker = async (complaintId: string, workerId: string) => {
     const workers = getWorkers()
     const w = workers.find(w => w.id === workerId)
@@ -89,9 +75,7 @@ export default function AllComplaints() {
     refreshComplaints()
     toast.success(`Assigned to ${w.name}`)
   }
-
   const workers = getWorkers()
-
   return (
     <div>
       <div className="flex items-start justify-between mb-6 flex-wrap gap-3">
@@ -106,13 +90,12 @@ export default function AllComplaints() {
             : <><ShieldCheck size={15} /> Run Dedup Scan</>}
         </button>
       </div>
-
-      {/* ── Duplicate Results Modal ────────────────────────── */}
+      {}
       {dupGroups && dupGroups.length > 0 && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4"
           style={{ background: 'rgba(0,0,0,0.5)', backdropFilter: 'blur(4px)' }}>
           <div className="bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-[80vh] flex flex-col overflow-hidden">
-            {/* Modal Header */}
+            {}
             <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100 bg-amber-50">
               <div className="flex items-center gap-2">
                 <AlertTriangle size={18} className="text-amber-600" />
@@ -125,12 +108,11 @@ export default function AllComplaints() {
                 <X size={18} className="text-gray-400 hover:text-gray-600" />
               </button>
             </div>
-
-            {/* Duplicate Groups List */}
+            {}
             <div className="overflow-y-auto flex-1 p-5 space-y-4">
               {dupGroups.map((g, i) => (
                 <div key={i} className="border border-gray-200 rounded-xl overflow-hidden">
-                  {/* Primary — keep */}
+                  {}
                   <div className="bg-green-50 px-4 py-3 border-b border-green-100">
                     <div className="flex items-center gap-1.5 mb-1">
                       <ShieldCheck size={12} className="text-green-600" />
@@ -147,7 +129,7 @@ export default function AllComplaints() {
                       <span>{g.primary.citizenName}</span>
                     </p>
                   </div>
-                  {/* Duplicates — will delete */}
+                  {}
                   {g.duplicates.map(d => (
                     <div key={d.id} className="px-4 py-3 bg-red-50 border-t border-red-100 flex items-center gap-3">
                       <Trash2 size={13} className="text-red-400 flex-shrink-0" />
@@ -165,8 +147,7 @@ export default function AllComplaints() {
                 </div>
               ))}
             </div>
-
-            {/* Modal Footer */}
+            {}
             <div className="px-6 py-4 border-t border-gray-100 bg-gray-50 flex gap-3">
               <button onClick={() => deleteDuplicates(dupGroups)}
                 className="flex-1 flex items-center justify-center gap-2 py-3 bg-red-600 hover:bg-red-700 text-white font-bold rounded-xl transition-all">
@@ -181,8 +162,7 @@ export default function AllComplaints() {
           </div>
         </div>
       )}
-
-      {/* Filters */}
+      {}
       <div className="cs-card mb-5 !p-4 flex flex-wrap gap-3">
         <div className="flex-1 min-w-48 relative">
           <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
@@ -201,7 +181,6 @@ export default function AllComplaints() {
           </div>
         ))}
       </div>
-
       {filtered.length === 0 ? (
         <div className="cs-card"><EmptyState icon={<Search size={28} />} title="No complaints match" sub="Try adjusting filters" /></div>
       ) : (
@@ -215,7 +194,6 @@ export default function AllComplaints() {
               </thead>
               <tbody>
                 {filtered.map(c => {
-                  // Compute or use cached score
                   const aiScore = c.priorityScore ?? computePriorityScore(c.title, c.description, c.category).score
                   const color   = scoreColor(aiScore)
                   const bg      = scoreBg(aiScore)
@@ -228,11 +206,10 @@ export default function AllComplaints() {
                       <div className="text-xs text-gray-400">{c.citizenName} · 📍 {c.location}</div>
                     </td>
                     <td className="px-4 py-3 text-xs text-gray-600 whitespace-nowrap">{c.department.split(' ')[0]}</td>
-
-                    {/* AI Priority Score Cell */}
+                    {}
                     <td className="px-4 py-3">
                       <div style={{ background: bg, border: `1px solid ${color}22`, borderRadius: 10, padding: '6px 10px', minWidth: 130 }}>
-                        {/* Score label + number */}
+                        {}
                         <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom: 5 }}>
                           <div style={{ display:'flex', alignItems:'center', gap: 4 }}>
                             <Zap size={10} style={{ color }} />
@@ -240,17 +217,16 @@ export default function AllComplaints() {
                           </div>
                           <span style={{ fontSize: 13, fontWeight: 800, color }}>{aiScore}%</span>
                         </div>
-                        {/* Progress bar */}
+                        {}
                         <div style={{ height: 5, background: 'rgba(0,0,0,0.07)', borderRadius: 99, overflow:'hidden' }}>
                           <div style={{ height:'100%', width:`${aiScore}%`, background: color, borderRadius: 99, transition:'width 0.6s ease' }} />
                         </div>
-                        {/* Sub-label: user priority */}
+                        {}
                         <div style={{ fontSize: 9, color:'#94a3b8', marginTop: 3, fontWeight: 600 }}>
                           User: <span style={{ color: c.priority==='High'?'#ef4444':c.priority==='Medium'?'#f59e0b':'#22c55e', fontWeight:700 }}>{c.priority}</span>
                         </div>
                       </div>
                     </td>
-
                     <td className="px-4 py-3"><StatusBadge status={c.status} /></td>
                     <td className="px-4 py-3 text-xs text-gray-400 whitespace-nowrap">{timeAgo(c.createdAt)}</td>
                     <td className="px-4 py-3">

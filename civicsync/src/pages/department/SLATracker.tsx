@@ -2,19 +2,15 @@ import { useStore } from '../../store'
 import { isOverdue } from '../../storage'
 import { StatusBadge, PriorityBadge, EmptyState } from '../../components/ui'
 import { Timer, AlertTriangle, CheckCircle } from 'lucide-react'
-
 export default function SLATracker() {
   const { session, complaints } = useStore()
   const dept = session?.department
-
   const list = complaints
     .filter(c => c.department === dept && !['Resolved','Closed'].includes(c.status))
     .map(c => ({ ...c, overdue: isOverdue(c) }))
     .sort((a, b) => (b.overdue ? 1 : 0) - (a.overdue ? 1 : 0) || new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime())
-
   const overdueCount = list.filter(c => c.overdue).length
   const onTrack = list.length - overdueCount
-
   return (
     <div>
       <div className="flex items-start justify-between mb-6">
@@ -23,8 +19,7 @@ export default function SLATracker() {
           <p className="text-sm text-gray-500">Complaints unresolved for more than 3 days are marked overdue.</p>
         </div>
       </div>
-
-      {/* Overdue Summary */}
+      {}
       <div className="grid grid-cols-2 gap-4 mb-6">
         <div className="cs-card border-red-100 flex items-center gap-4">
           <div className="w-10 h-10 bg-red-50 rounded-xl flex items-center justify-center">
@@ -45,7 +40,6 @@ export default function SLATracker() {
           </div>
         </div>
       </div>
-
       {list.length === 0 ? (
         <div className="cs-card"><EmptyState icon={<Timer size={28} />} title="All resolved!" sub="No pending complaints for this department." /></div>
       ) : (

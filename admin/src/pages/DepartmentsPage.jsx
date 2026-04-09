@@ -4,7 +4,6 @@ import { doc, setDoc, collection, getDocs, serverTimestamp } from 'firebase/fire
 import { auth, db } from '../firebase';
 import TopNavbar from '../components/TopNavbar';
 import toast from 'react-hot-toast';
-
 const DEPARTMENTS = [
   { id: 'road', name: 'Roads & Infrastructure', icon: '🛣️', head: 'Dept. of Public Works' },
   { id: 'water', name: 'Water Supply', icon: '💧', head: 'Jal Board' },
@@ -13,7 +12,6 @@ const DEPARTMENTS = [
   { id: 'fire', name: 'Fire & Emergency', icon: '🔥', head: 'Fire Brigade' },
   { id: 'crime', name: 'Police & Security', icon: '🚔', head: 'City Police' },
 ];
-
 export default function DepartmentsPage() {
   const [showForm, setShowForm] = useState(false);
   const [name, setName] = useState('');
@@ -22,7 +20,6 @@ export default function DepartmentsPage() {
   const [dept, setDept] = useState('road');
   const [role, setRole] = useState('department');
   const [loading, setLoading] = useState(false);
-
   const createAdmin = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -41,7 +38,6 @@ export default function DepartmentsPage() {
       setLoading(false);
     }
   };
-
   return (
     <>
       <TopNavbar
@@ -75,7 +71,6 @@ export default function DepartmentsPage() {
             </div>
           ))}
         </div>
-
         {showForm && (
           <div className="modal-overlay" onClick={() => setShowForm(false)}>
             <div className="modal animate-slideUp" onClick={e => e.stopPropagation()}>

@@ -6,10 +6,8 @@ import useStore from '../store';
 import { autoClassify, autoSeverity, CATEGORIES, findDuplicates, generateTicketId } from '../lib/intelligence';
 import { Camera, Mic, MapPin, ChevronRight, X, Check, AlertTriangle } from 'lucide-react';
 import toast from 'react-hot-toast';
-
 const STEPS = ['category', 'details', 'media', 'location', 'review'];
 const AREAS = ['Sector 1', 'Sector 2', 'Old Town', 'Market Area', 'Station Road', 'Ashok Nagar', 'Gandhi Nagar', 'Lake Area', 'Hospital Zone', 'Bus Stand', 'Civil Lines', 'New Extension'];
-
 export default function SubmitScreen({ onSuccess, onBack }) {
   const { user, profile } = useStore();
   const [step, setStep] = useState(0);
@@ -26,8 +24,6 @@ export default function SubmitScreen({ onSuccess, onBack }) {
   const mediaRecorder = useRef(null);
   const chunks = useRef([]);
   const fileInput = useRef();
-
-  // Auto-classify as user types
   const handleTextChange = (key, val) => {
     const updated = { ...form, [key]: val };
     const text = updated.title + ' ' + updated.description;
@@ -37,28 +33,22 @@ export default function SubmitScreen({ onSuccess, onBack }) {
     }
     setForm(updated);
   };
-
-  // GPS location
   const getLocation = () => {
     setGpsLoading(true);
     navigator.geolocation.getCurrentPosition(
       async (pos) => {
         const { latitude: lat, longitude: lng } = pos.coords;
-        // Reverse geocode (use area list as fallback)
-        const area = AREAS[Math.floor(Math.random() * AREAS.length)]; // Simulated
+        const area = AREAS[Math.floor(Math.random() * AREAS.length)];
         setForm(f => ({ ...f, location: { lat, lng, area, address: `${area}, City` } }));
         setGpsLoading(false);
         toast.success('Location captured! 📍');
       },
       () => {
-        // Fallback: manual
         setGpsLoading(false);
         toast.error('GPS unavailable. Select area manually.');
       }
     );
   };
-
-  // Image upload
   const handleImages = async (e) => {
     const files = Array.from(e.target.files).slice(0, 5);
     const urls = [];
@@ -71,8 +61,6 @@ export default function SubmitScreen({ onSuccess, onBack }) {
     setForm(f => ({ ...f, media: [...f.media, ...urls].slice(0, 5) }));
     toast.success(`${files.length} photo(s) added`);
   };
-
-  // Voice recording
   const startRecording = async () => {
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
@@ -87,14 +75,11 @@ export default function SubmitScreen({ onSuccess, onBack }) {
       setRecording(true);
     } catch { toast.error('Microphone not available'); }
   };
-
   const stopRecording = () => {
     mediaRecorder.current?.stop();
     setRecording(false);
     toast.success('Voice recorded!');
   };
-
-  // Check duplicates
   const checkDuplicates = async () => {
     try {
       const snap = await getDocs(query(collection(db, 'complaints'), orderBy('createdAt', 'desc'), limit(50)));
@@ -108,23 +93,19 @@ export default function SubmitScreen({ onSuccess, onBack }) {
     } catch {}
     return false;
   };
-
   const handleNext = async () => {
     if (step === STEPS.indexOf('details')) {
       if (!form.title) { toast.error('Please enter a title'); return; }
     }
     if (step === STEPS.indexOf('location')) {
       if (!form.location) { toast.error('Location required'); return; }
-      // Check duplicates before review
       const hasDup = await checkDuplicates();
       if (hasDup) return;
     }
     setStep(s => Math.min(s + 1, STEPS.length - 1));
   };
-
   const submitComplaint = async (supportExisting = false) => {
     if (supportExisting && duplicates[0]) {
-      // Increment report count on existing
       try {
         const { doc, updateDoc, increment } = await import('firebase/firestore');
         await updateDoc(doc(db, 'complaints', duplicates[0].id), {
@@ -135,7 +116,6 @@ export default function SubmitScreen({ onSuccess, onBack }) {
         return;
       } catch { toast.error('Failed to support complaint'); return; }
     }
-
     setSubmitting(true);
     setShowDupWarning(false);
     try {
@@ -145,11 +125,9 @@ export default function SubmitScreen({ onSuccess, onBack }) {
         const snap = await uploadBytes(r, audioBlob);
         audioUrl = await getDownloadURL(snap.ref);
       }
-
       const ticketId = generateTicketId();
       const category = form.category || autoClassify(form.title + ' ' + form.description);
       const severity = form.severity || autoSeverity(form.title + ' ' + form.description, form.media.length);
-
       const data = {
         ticketId,
         title: form.title,
@@ -170,7 +148,6 @@ export default function SubmitScreen({ onSuccess, onBack }) {
         createdAt: serverTimestamp(),
         updatedAt: serverTimestamp(),
       };
-
       await addDoc(collection(db, 'complaints'), data);
       onSuccess({ ticketId, data });
     } catch (err) {
@@ -179,12 +156,10 @@ export default function SubmitScreen({ onSuccess, onBack }) {
       setSubmitting(false);
     }
   };
-
   const progress = ((step + 1) / STEPS.length) * 100;
-
   return (
     <div className="screen" style={{ background: 'var(--bg)' }}>
-      {/* Header */}
+      {}
       <div className="topbar">
         <button className="topbar-back" onClick={onBack}>←</button>
         <div style={{ flex: 1 }}>
@@ -197,9 +172,8 @@ export default function SubmitScreen({ onSuccess, onBack }) {
           <div className="progress-fill" style={{ width: `${progress}%` }} />
         </div>
       </div>
-
       <div className="page" style={{ paddingTop: 20 }}>
-        {/* STEP 0: Category */}
+        {}
         {step === 0 && (
           <div className="fade-up">
             <h2 style={{ fontSize: 20, fontWeight: 800, marginBottom: 6 }}>Select Category</h2>
@@ -226,13 +200,11 @@ export default function SubmitScreen({ onSuccess, onBack }) {
             </button>
           </div>
         )}
-
-        {/* STEP 1: Details */}
+        {}
         {step === 1 && (
           <div className="fade-up">
             <h2 style={{ fontSize: 20, fontWeight: 800, marginBottom: 6 }}>Describe the Issue</h2>
             <p style={{ color: 'var(--text2)', fontSize: 14, marginBottom: 20 }}>Provide details so we can act quickly</p>
-
             <div className="form-group">
               <label className="form-label">Issue Title *</label>
               <input
@@ -243,7 +215,6 @@ export default function SubmitScreen({ onSuccess, onBack }) {
                 maxLength={100}
               />
             </div>
-
             <div className="form-group">
               <label className="form-label">Description</label>
               <textarea
@@ -253,15 +224,13 @@ export default function SubmitScreen({ onSuccess, onBack }) {
                 placeholder="More details about location, duration, impact..."
               />
             </div>
-
-            {/* AI Suggestion */}
+            {}
             {(form.category || form.severity) && (
               <div className="suggest-box mb-3">
                 🤖 AI detected: <strong>{form.category}</strong> · Severity: <strong>{form.severity}</strong>
               </div>
             )}
-
-            {/* Voice input */}
+            {}
             <div className="form-group">
               <label className="form-label">Or Record Voice</label>
               <div className="voice-recorder">
@@ -281,17 +250,14 @@ export default function SubmitScreen({ onSuccess, onBack }) {
                 )}
               </div>
             </div>
-
             <button className="btn btn-primary" onClick={handleNext} disabled={!form.title}>Continue →</button>
           </div>
         )}
-
-        {/* STEP 2: Media */}
+        {}
         {step === 2 && (
           <div className="fade-up">
             <h2 style={{ fontSize: 20, fontWeight: 800, marginBottom: 6 }}>Add Photos</h2>
             <p style={{ color: 'var(--text2)', fontSize: 14, marginBottom: 20 }}>Photos strengthen your complaint (up to 5)</p>
-
             <div className="media-grid">
               {form.media.map((url, i) => (
                 <div key={i} className="media-item">
@@ -309,36 +275,14 @@ export default function SubmitScreen({ onSuccess, onBack }) {
                 </div>
               )}
             </div>
-
             <input
               ref={fileInput}
               type="file"
-              accept="image/*"
-              multiple
-              capture="environment"
-              style={{ display: 'none' }}
-              onChange={handleImages}
-            />
-
-            {form.media.length === 0 && (
-              <div className="alert alert-info mt-4">
-                <span>💡</span>
-                <span>Photos are optional but help get your complaint resolved 3x faster!</span>
-              </div>
-            )}
-
-            <button className="btn btn-primary mt-4" onClick={handleNext}>
-              {form.media.length > 0 ? `Continue with ${form.media.length} photo(s) →` : 'Skip & Continue →'}
-            </button>
-          </div>
-        )}
-
-        {/* STEP 3: Location */}
+              accept="image}
         {step === 3 && (
           <div className="fade-up">
             <h2 style={{ fontSize: 20, fontWeight: 800, marginBottom: 6 }}>Location</h2>
             <p style={{ color: 'var(--text2)', fontSize: 14, marginBottom: 20 }}>Where is the issue located?</p>
-
             <button
               className="btn btn-outline"
               onClick={getLocation}
@@ -348,7 +292,6 @@ export default function SubmitScreen({ onSuccess, onBack }) {
               {gpsLoading ? <span className="spinner" style={{ width: 18, height: 18, borderWidth: 2 }} /> : '📍'}
               {gpsLoading ? ' Detecting...' : ' Use My GPS Location'}
             </button>
-
             {form.location && (
               <div className="location-card mb-4">
                 <div>
@@ -362,7 +305,6 @@ export default function SubmitScreen({ onSuccess, onBack }) {
                 )}
               </div>
             )}
-
             <div className="form-group">
               <label className="form-label">Or Select Area Manually</label>
               <select
@@ -374,7 +316,6 @@ export default function SubmitScreen({ onSuccess, onBack }) {
                 {AREAS.map(a => <option key={a} value={a}>{a}</option>)}
               </select>
             </div>
-
             <button
               className="btn btn-primary"
               onClick={handleNext}
@@ -384,13 +325,11 @@ export default function SubmitScreen({ onSuccess, onBack }) {
             </button>
           </div>
         )}
-
-        {/* STEP 4: Review */}
+        {}
         {step === 4 && (
           <div className="fade-up">
             <h2 style={{ fontSize: 20, fontWeight: 800, marginBottom: 6 }}>Review & Submit</h2>
             <p style={{ color: 'var(--text2)', fontSize: 14, marginBottom: 20 }}>Confirm your complaint details</p>
-
             <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
               {[
                 { label: 'Category', value: `${CATEGORIES.find(c => c.id === form.category)?.icon} ${form.category}` },
@@ -405,7 +344,6 @@ export default function SubmitScreen({ onSuccess, onBack }) {
                 </div>
               ))}
             </div>
-
             <button
               className="btn btn-primary"
               onClick={() => submitComplaint(false)}
@@ -416,8 +354,7 @@ export default function SubmitScreen({ onSuccess, onBack }) {
             </button>
           </div>
         )}
-
-        {/* Duplicate Warning Modal */}
+        {}
         {showDupWarning && (
           <div style={{
             position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.75)', zIndex: 200,
@@ -436,14 +373,12 @@ export default function SubmitScreen({ onSuccess, onBack }) {
                   Supporting the existing complaint increases its priority!
                 </div>
               </div>
-
               <div style={{ background: 'var(--bg3)', borderRadius: 12, padding: 14, marginBottom: 16 }}>
                 <div style={{ fontWeight: 700, fontSize: 14 }}>{duplicates[0]?.title}</div>
                 <div style={{ fontSize: 12, color: 'var(--text2)', marginTop: 4 }}>
                   📍 {duplicates[0]?.location?.area} · {duplicates[0]?.reportCount || 1} reports
                 </div>
               </div>
-
               <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
                 <button className="btn btn-primary" onClick={() => submitComplaint(true)}>
                   👍 Support Existing Report (Recommended)

@@ -1,16 +1,13 @@
 import { getPriorityLabel, calculatePriorityScore } from '../intelligence/priorityEngine';
-
 const CATEGORY_ICONS = {
   water: '💧', electricity: '⚡', road: '🛣️', health: '🏥',
   sanitation: '🗑️', fire: '🔥', flood: '🌊', crime: '🚨',
   gas: '💨', other: '📋',
 };
-
 const STATUS_LABELS = {
   submitted: 'Submitted', pending: 'Pending', underReview: 'Under Review',
   assigned: 'Assigned', inProgress: 'In Progress', escalated: 'Escalated', resolved: 'Resolved',
 };
-
 export function PriorityBadge({ complaint }) {
   const score = calculatePriorityScore(complaint);
   const label = getPriorityLabel(score);
@@ -23,7 +20,6 @@ export function PriorityBadge({ complaint }) {
     </div>
   );
 }
-
 export function StatusBadge({ status }) {
   return (
     <span className={`status-badge status-${status || 'pending'}`}>
@@ -31,7 +27,6 @@ export function StatusBadge({ status }) {
     </span>
   );
 }
-
 export function CategoryChip({ category }) {
   return (
     <span className={`chip chip-${category || 'other'}`}>
@@ -39,7 +34,6 @@ export function CategoryChip({ category }) {
     </span>
   );
 }
-
 export function ScoreBar({ score }) {
   const color = score >= 75 ? '#ef4444' : score >= 55 ? '#f97316' : score >= 35 ? '#f59e0b' : '#10b981';
   return (
@@ -51,16 +45,13 @@ export function ScoreBar({ score }) {
     </div>
   );
 }
-
 export function DuplicateBadge({ count }) {
   if (!count || count <= 1) return null;
   return <span className="dup-badge">🔁 {count} reports</span>;
 }
-
 export function ComplaintTimeline({ timeline, status }) {
   const stages = ['submitted', 'underReview', 'assigned', 'inProgress', 'resolved'];
   const currentIndex = stages.indexOf(status);
-
   return (
     <div className="timeline">
       {stages.map((stage, i) => {
@@ -85,7 +76,6 @@ export function ComplaintTimeline({ timeline, status }) {
     </div>
   );
 }
-
 export function MediaGallery({ media = [] }) {
   if (!media.length) return <div style={{ color: 'var(--text-muted)', fontSize: 13 }}>No media attached</div>;
   return (
@@ -102,7 +92,6 @@ export function MediaGallery({ media = [] }) {
     </div>
   );
 }
-
 export function KpiCard({ label, value, icon, color, iconBg, change, changeType }) {
   return (
     <div className="kpi-card" style={{ '--color': color, '--icon-bg': iconBg }}>
@@ -117,13 +106,11 @@ export function KpiCard({ label, value, icon, color, iconBg, change, changeType 
     </div>
   );
 }
-
 export function formatDate(ts) {
   if (!ts) return '—';
   const d = ts.seconds ? new Date(ts.seconds * 1000) : new Date(ts);
   return d.toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' });
 }
-
 export function timeAgo(ts) {
   if (!ts) return '';
   const d = ts.seconds ? new Date(ts.seconds * 1000) : new Date(ts);

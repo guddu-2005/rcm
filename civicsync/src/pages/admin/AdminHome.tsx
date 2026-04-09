@@ -3,22 +3,17 @@ import { StatusBadge, PriorityBadge } from '../../components/ui'
 import { TrendingUp, CheckCircle, Clock, AlertTriangle, Users, Building2, ArrowRight } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 import { timeAgo } from '../../storage'
-
 export default function AdminHome() {
   const { complaints } = useStore()
   const navigate = useNavigate()
-
   const stats = [
     { label: 'Total', val: complaints.length, icon: <TrendingUp size={18} />, color: 'text-blue-600', bg: 'bg-blue-50' },
     { label: 'Pending', val: complaints.filter(c => !['Resolved','Closed'].includes(c.status)).length, icon: <Clock size={18} />, color: 'text-amber-600', bg: 'bg-amber-50' },
     { label: 'Resolved', val: complaints.filter(c => c.status === 'Resolved' || c.status === 'Closed').length, icon: <CheckCircle size={18} />, color: 'text-green-600', bg: 'bg-green-50' },
     { label: 'High Priority', val: complaints.filter(c => c.priority === 'High' && c.status !== 'Resolved').length, icon: <AlertTriangle size={18} />, color: 'text-red-600', bg: 'bg-red-50' },
   ]
-
   const recent = [...complaints].sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()).slice(0, 8)
-
   const unverified = complaints.filter(c => c.status === 'Submitted').length
-
   return (
     <div>
       <div className="flex items-start justify-between mb-8">
@@ -32,8 +27,7 @@ export default function AdminHome() {
           </div>
         )}
       </div>
-
-      {/* Stats */}
+      {}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
         {stats.map(({ label, val, icon, color, bg }) => (
           <div key={label} className="cs-card">
@@ -43,8 +37,7 @@ export default function AdminHome() {
           </div>
         ))}
       </div>
-
-      {/* Quick Actions */}
+      {}
       <div className="grid sm:grid-cols-3 gap-4 mb-8">
         {[
           { label: 'Manage Complaints', sub: 'Assign, verify & close', href: '/admin/dashboard/complaints', color: 'bg-primary-600', icon: <Building2 size={20} className="text-white" /> },
@@ -62,8 +55,7 @@ export default function AdminHome() {
           </button>
         ))}
       </div>
-
-      {/* Recent Complaints */}
+      {}
       <div className="cs-card overflow-hidden !p-0">
         <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100">
           <h2 className="font-display font-bold text-gray-900">Recent Complaints</h2>

@@ -5,7 +5,6 @@ import { getWorkers } from '../../storage'
 import { FormError } from '../../components/ui'
 import { HardHat, ArrowLeft } from 'lucide-react'
 import toast from 'react-hot-toast'
-
 export default function WorkerLogin() {
   const navigate = useNavigate()
   const { login } = useStore()
@@ -13,7 +12,6 @@ export default function WorkerLogin() {
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setError('')
@@ -26,7 +24,6 @@ export default function WorkerLogin() {
     navigate('/worker/dashboard')
     setLoading(false)
   }
-
   return (
     <div className="min-h-screen bg-gradient-to-br from-amber-50 to-orange-100 flex items-center justify-center p-4">
       <div className="bg-white rounded-3xl shadow-xl w-full max-w-md p-8 animate-fade-up">

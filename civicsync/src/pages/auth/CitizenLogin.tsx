@@ -5,7 +5,6 @@ import { getCitizens } from '../../storage'
 import { FormError } from '../../components/ui'
 import { User, Eye, EyeOff, ArrowLeft } from 'lucide-react'
 import toast from 'react-hot-toast'
-
 export default function CitizenLogin() {
   const navigate = useNavigate()
   const { login } = useStore()
@@ -14,7 +13,6 @@ export default function CitizenLogin() {
   const [showPw, setShowPw] = useState(false)
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setError('')
@@ -28,7 +26,6 @@ export default function CitizenLogin() {
     navigate('/citizen/dashboard')
     setLoading(false)
   }
-
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-4">
       <div className="bg-white rounded-3xl shadow-xl w-full max-w-md p-8 animate-fade-up">

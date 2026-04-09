@@ -4,19 +4,15 @@ import { StatusBadge, PriorityBadge, EmptyState } from '../../components/ui'
 import { STATUS_CONFIG, type ComplaintStatus, type Complaint } from '../../types'
 import { List, ChevronDown, ChevronUp, MapPin, Clock, CheckCircle } from 'lucide-react'
 import { timeAgo } from '../../storage'
-
 const STATUSES: ComplaintStatus[] = ['Submitted', 'Verified', 'Assigned', 'In Progress', 'Resolved', 'Closed']
-
 export default function MyComplaints() {
   const { session, complaints: allComplaints } = useStore()
   const [filter, setFilter] = useState<ComplaintStatus | 'All'>('All')
   const [expanded, setExpanded] = useState<string | null>(null)
-
   const myComplaints = allComplaints
     .filter(c => c.citizenId === session?.userId)
     .filter(c => filter === 'All' || c.status === filter)
     .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
-
   return (
     <div>
       <div className="flex items-start justify-between mb-6">
@@ -25,8 +21,7 @@ export default function MyComplaints() {
           <p className="text-sm text-gray-500">{myComplaints.length} complaint{myComplaints.length !== 1 ? 's' : ''}</p>
         </div>
       </div>
-
-      {/* Filter Tabs */}
+      {}
       <div className="flex flex-wrap gap-2 mb-6">
         {(['All', ...STATUSES] as const).map(s => (
           <button key={s} onClick={() => setFilter(s)}
@@ -39,7 +34,6 @@ export default function MyComplaints() {
           </button>
         ))}
       </div>
-
       {myComplaints.length === 0 ? (
         <div className="cs-card">
           <EmptyState icon={<List size={28} />} title="No complaints found" sub="Try a different filter or file a new complaint." />
@@ -54,7 +48,6 @@ export default function MyComplaints() {
     </div>
   )
 }
-
 function ComplaintCard({ complaint: c, expanded, onToggle }: { complaint: Complaint; expanded: boolean; onToggle: () => void }) {
   return (
     <div className="cs-card !p-0 overflow-hidden">
@@ -78,7 +71,6 @@ function ComplaintCard({ complaint: c, expanded, onToggle }: { complaint: Compla
           </div>
         </div>
       </button>
-
       {expanded && (
         <div className="border-t border-gray-100 p-5 animate-fade-in">
           <div className="grid sm:grid-cols-2 gap-4 mb-5">
@@ -90,20 +82,17 @@ function ComplaintCard({ complaint: c, expanded, onToggle }: { complaint: Compla
               <img src={c.photo} alt="complaint" className="w-full h-32 object-cover rounded-xl border border-gray-200" />
             )}
           </div>
-
           {c.assignedWorkerName && (
             <div className="mb-5 p-3 bg-blue-50 rounded-xl border border-blue-100 text-sm text-blue-800">
               <strong>Assigned to:</strong> {c.assignedWorkerName} ({c.assignedDept})
             </div>
           )}
-
           {c.resolutionNote && (
             <div className="mb-5 p-3 bg-green-50 rounded-xl border border-green-100 text-sm text-green-800">
               <strong>Resolution:</strong> {c.resolutionNote}
             </div>
           )}
-
-          {/* Timeline */}
+          {}
           <div>
             <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3">Status Timeline</p>
             <div className="space-y-3">

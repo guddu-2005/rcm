@@ -4,17 +4,13 @@ import { updateComplaint, getWorkers } from '../../storage'
 import { StatusBadge, PriorityBadge, EmptyState } from '../../components/ui'
 import { UserCheck } from 'lucide-react'
 import toast from 'react-hot-toast'
-
 export default function AssignToWorker() {
   const { session, complaints, refreshComplaints } = useStore()
   const dept = session?.department
   const workers = getWorkers().filter(w => w.department === dept)
-
   const assignable = complaints.filter(c => c.department === dept && !['Resolved','Closed'].includes(c.status))
     .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
-
   const [selections, setSelections] = useState<Record<string, string>>({})
-
   const handleAssign = (complaintId: string) => {
     const workerId = selections[complaintId]
     if (!workerId) { toast.error('Please select a worker first'); return }
@@ -29,14 +25,12 @@ export default function AssignToWorker() {
     refreshComplaints()
     toast.success(`Complaint assigned to ${worker.name}!`)
   }
-
   return (
     <div>
       <div className="mb-6">
         <h1 className="font-display text-2xl font-bold text-gray-900 mb-1">Assign to Worker</h1>
         <p className="text-sm text-gray-500">{workers.length} workers available in {dept}</p>
       </div>
-
       {assignable.length === 0 ? (
         <div className="cs-card"><EmptyState icon={<UserCheck size={28} />} title="Nothing to assign" sub="All complaints are resolved or already assigned." /></div>
       ) : (

@@ -1,6 +1,5 @@
 import React from 'react'
 import { STATUS_CONFIG, PRIORITY_CONFIG, type ComplaintStatus, type Priority } from '../types'
-
 export function StatusBadge({ status }: { status: ComplaintStatus }) {
   const cfg = STATUS_CONFIG[status]
   return (
@@ -10,7 +9,6 @@ export function StatusBadge({ status }: { status: ComplaintStatus }) {
     </span>
   )
 }
-
 export function PriorityBadge({ priority }: { priority: Priority }) {
   const cfg = PRIORITY_CONFIG[priority]
   return (
@@ -19,7 +17,6 @@ export function PriorityBadge({ priority }: { priority: Priority }) {
     </span>
   )
 }
-
 export function Spinner() {
   return (
     <div className="flex items-center justify-center py-12">
@@ -27,7 +24,6 @@ export function Spinner() {
     </div>
   )
 }
-
 export function EmptyState({ icon, title, sub }: { icon: React.ReactNode; title: string; sub?: string }) {
   return (
     <div className="flex flex-col items-center justify-center py-16 text-center">
@@ -39,12 +35,10 @@ export function EmptyState({ icon, title, sub }: { icon: React.ReactNode; title:
     </div>
   )
 }
-
 export function FormError({ msg }: { msg?: string }) {
   if (!msg) return null
   return <p className="cs-error">⚠ {msg}</p>
 }
-
 export function Avatar({ name, size = 'sm' }: { name: string; size?: 'sm' | 'md' | 'lg' }) {
   const sz = size === 'sm' ? 'w-8 h-8 text-xs' : size === 'md' ? 'w-10 h-10 text-sm' : 'w-14 h-14 text-lg'
   return (

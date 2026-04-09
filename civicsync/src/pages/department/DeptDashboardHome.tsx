@@ -2,10 +2,7 @@ import { useStore } from '../../store'
 import { isOverdue, getWorkers } from '../../storage'
 import { PieChart, Pie, Cell, Tooltip, BarChart, Bar, XAxis, YAxis, CartesianGrid, Legend, ResponsiveContainer } from 'recharts'
 import { BarChart3, PieChart as PieIcon, Activity, Inbox, AlertTriangle, Users } from 'lucide-react'
-
-// --- Custom Tooltips ---
 interface TooltipProps { active?: boolean; payload?: any[]; label?: string }
-
 const CustomPieTooltip = ({ active, payload }: TooltipProps) => {
   if (active && payload && payload.length) {
     const data = payload[0].payload
@@ -27,7 +24,6 @@ const CustomPieTooltip = ({ active, payload }: TooltipProps) => {
   }
   return null
 }
-
 const CustomBarTooltip = ({ active, payload, label }: TooltipProps) => {
   if (active && payload && payload.length) {
     const data = payload[0].payload
@@ -51,8 +47,6 @@ const CustomBarTooltip = ({ active, payload, label }: TooltipProps) => {
   }
   return null
 }
-
-
 const MetricCard = ({ title, value, icon, bg }: any) => (
   <div className="relative bg-white rounded-2xl p-6 shadow-[0_8px_30px_rgb(0,0,0,0.06)] border border-slate-100 overflow-hidden transform transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_20px_40px_rgb(0,0,0,0.12)] group">
     <div className="absolute inset-0 bg-gradient-to-br from-white/60 to-transparent opacity-50 pointer-events-none" />
@@ -69,33 +63,25 @@ const MetricCard = ({ title, value, icon, bg }: any) => (
     <div className="absolute inset-0 border-t-2 border-white pointer-events-none rounded-2xl" />
   </div>
 )
-
 export default function DeptDashboardHome() {
   const { session, complaints } = useStore()
   const dept = session?.department
-
   const deptComplaints = complaints.filter(c => c.department === dept)
   const pending = deptComplaints.filter(c => !['Resolved','Closed'].includes(c.status))
-  
-  // 1. SLA Tracker Data (Overdue vs On Track)
   const overdueCount = pending.filter(isOverdue).length
   const onTrackCount = pending.length - overdueCount
   const totalSla = pending.length || 1
   const slaData = [
-    { name: 'Overdue', value: overdueCount, percentage: Math.round((overdueCount/totalSla)*100), color: '#ef4444' }, // red-500
-    { name: 'On Track', value: onTrackCount, percentage: Math.round((onTrackCount/totalSla)*100), color: '#22c55e' } // green-500
+    { name: 'Overdue', value: overdueCount, percentage: Math.round((overdueCount/totalSla)*100), color: '#ef4444' },
+    { name: 'On Track', value: onTrackCount, percentage: Math.round((onTrackCount/totalSla)*100), color: '#22c55e' }
   ]
-
-  // 2. Assignment Status (Unassigned vs Assigned)
   const unassigned = pending.filter(c => ['Submitted', 'Verified'].includes(c.status)).length
   const assigned = pending.filter(c => ['Assigned', 'In Progress'].includes(c.status)).length
   const totalAssign = unassigned + assigned || 1
   const assignData = [
-    { name: 'Unassigned', value: unassigned, percentage: Math.round((unassigned/totalAssign)*100), color: '#f59e0b' }, // amber-500
-    { name: 'Assigned / WIP', value: assigned, percentage: Math.round((assigned/totalAssign)*100), color: '#3b82f6' }  // blue-500
+    { name: 'Unassigned', value: unassigned, percentage: Math.round((unassigned/totalAssign)*100), color: '#f59e0b' },
+    { name: 'Assigned / WIP', value: assigned, percentage: Math.round((assigned/totalAssign)*100), color: '#3b82f6' }
   ]
-
-  // 3. Worker Performance Data
   const workers = getWorkers().filter(w => w.department === dept)
   const workerData = workers.map(w => {
     const active = deptComplaints.filter(c => c.assignedWorkerId === w.id && !['Resolved','Closed'].includes(c.status)).length
@@ -112,7 +98,6 @@ export default function DeptDashboardHome() {
   const totalTickets = deptComplaints.length
   const openTasks = pending.length
   const totalWorkers = workers.length
-
   return (
     <div className="space-y-8 pb-10">
       <div className="flex items-start justify-between mb-2">
@@ -121,17 +106,14 @@ export default function DeptDashboardHome() {
           <p className="text-base text-slate-500 font-medium">Live modern overview of {dept} operations and SLA compliance.</p>
         </div>
       </div>
-
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         <MetricCard title="Total Complaints" value={totalTickets} icon={<Inbox size={32} className="text-blue-600" />} bg="bg-blue-50" />
         <MetricCard title="Active Tasks" value={openTasks} icon={<Activity size={32} className="text-amber-600" />} bg="bg-amber-50" />
         <MetricCard title="Overdue SLA" value={overdueCount} icon={<AlertTriangle size={32} className="text-red-600" />} bg="bg-red-50" />
         <MetricCard title="Total Workers" value={totalWorkers} icon={<Users size={32} className="text-emerald-600" />} bg="bg-emerald-50" />
       </div>
-
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        
-        {/* SLA Pie Chart */}
+        {}
         <div className="relative bg-white rounded-2xl p-6 border border-slate-100 shadow-[0_8px_30px_rgb(0,0,0,0.05)] hover:shadow-[0_20px_40px_rgb(0,0,0,0.1)] transition-all duration-300">
           <div className="absolute inset-0 border-t-2 border-white pointer-events-none rounded-2xl" />
           <h3 className="font-bold text-slate-800 mb-6 flex items-center gap-2 text-lg">
@@ -160,8 +142,7 @@ export default function DeptDashboardHome() {
             </ResponsiveContainer>
           </div>
         </div>
-
-        {/* Assignment Pie Chart */}
+        {}
         <div className="relative bg-white rounded-2xl p-6 border border-slate-100 shadow-[0_8px_30px_rgb(0,0,0,0.05)] hover:shadow-[0_20px_40px_rgb(0,0,0,0.1)] transition-all duration-300">
           <div className="absolute inset-0 border-t-2 border-white pointer-events-none rounded-2xl" />
           <h3 className="font-bold text-slate-800 mb-6 flex items-center gap-2 text-lg">
@@ -190,15 +171,13 @@ export default function DeptDashboardHome() {
           </div>
         </div>
       </div>
-
-      {/* Worker Performance Bar Chart */}
+      {}
       <div className="relative bg-white rounded-2xl p-6 border border-slate-100 shadow-[0_8px_30px_rgb(0,0,0,0.05)] hover:shadow-[0_20px_40px_rgb(0,0,0,0.1)] transition-all duration-300">
         <div className="absolute inset-0 border-t-2 border-white pointer-events-none rounded-2xl" />
         <h3 className="font-bold text-slate-800 mb-6 flex items-center gap-2 text-lg relative z-10">
           <BarChart3 className="text-blue-500 bg-blue-50 p-1 rounded border border-blue-100" size={26} />
           Worker Performance & Workload
         </h3>
-        
         {workerData.length === 0 ? (
           <div className="text-center py-10 text-gray-500 text-sm bg-gray-50 rounded-xl border border-dashed border-gray-200">
             No workers found in this department. Go to "My Workers" to add some.
@@ -246,7 +225,6 @@ export default function DeptDashboardHome() {
           </div>
         )}
       </div>
-
     </div>
   )
 }

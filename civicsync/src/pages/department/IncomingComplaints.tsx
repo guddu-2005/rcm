@@ -4,27 +4,22 @@ import { StatusBadge, PriorityBadge, EmptyState } from '../../components/ui'
 import { type ComplaintStatus } from '../../types'
 import { Inbox } from 'lucide-react'
 import { timeAgo } from '../../storage'
-
 const STATUSES: ComplaintStatus[] = ['Submitted', 'Verified', 'Assigned', 'In Progress', 'Resolved', 'Closed']
-
 export default function IncomingComplaints() {
   const { session, complaints } = useStore()
   const [filter, setFilter] = useState<ComplaintStatus | 'All'>('All')
-
   const dept = session?.department
   const myComplaints = complaints
     .filter(c => c.department === dept)
     .filter(c => filter === 'All' || c.status === filter)
     .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
-
   return (
     <div>
       <div className="mb-6">
         <h1 className="font-display text-2xl font-bold text-gray-900 mb-1">Incoming Complaints</h1>
         <p className="text-sm text-gray-500">{dept} — {myComplaints.length} complaint{myComplaints.length !== 1 ? 's' : ''}</p>
       </div>
-
-      {/* Filter Tabs */}
+      {}
       <div className="flex flex-wrap gap-2 mb-5">
         {(['All', ...STATUSES] as const).map(s => (
           <button key={s} onClick={() => setFilter(s)}
@@ -35,7 +30,6 @@ export default function IncomingComplaints() {
           </button>
         ))}
       </div>
-
       {myComplaints.length === 0 ? (
         <div className="cs-card"><EmptyState icon={<Inbox size={28} />} title="No complaints" sub="No complaints for this department matching the filter." /></div>
       ) : (

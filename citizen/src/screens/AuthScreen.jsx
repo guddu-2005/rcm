@@ -1,21 +1,18 @@
 import { useState } from 'react';
 import useStore from '../store';
 import toast from 'react-hot-toast';
-
 const DEMO_USERS = [
   { name: 'Rahul Sharma', phone: '9876543210', email: 'rahul@citizen.in', password: 'Pass@123' },
   { name: 'Priya Patel', phone: '9123456789', email: 'priya@citizen.in', password: 'Pass@123' },
 ];
-
 export default function AuthScreen() {
-  const [mode, setMode] = useState('login'); // login | register
+  const [mode, setMode] = useState('login');
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const { loginEmail, registerEmail } = useStore();
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -37,10 +34,9 @@ export default function AuthScreen() {
       setLoading(false);
     }
   };
-
   return (
     <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', background: 'var(--bg)', padding: 24 }}>
-      {/* Header */}
+      {}
       <div style={{ textAlign: 'center', padding: '40px 0 32px' }}>
         <div style={{
           width: 72, height: 72,
@@ -53,8 +49,7 @@ export default function AuthScreen() {
         <h1 style={{ fontSize: 26, fontWeight: 800, marginBottom: 6 }}>GrievanceIQ</h1>
         <p style={{ color: 'var(--text2)', fontSize: 14 }}>Smart City Citizen Portal</p>
       </div>
-
-      {/* Tabs */}
+      {}
       <div style={{ display: 'flex', background: 'var(--bg3)', borderRadius: 10, padding: 4, marginBottom: 24 }}>
         {['login', 'register'].map(m => (
           <button
@@ -71,7 +66,6 @@ export default function AuthScreen() {
           </button>
         ))}
       </div>
-
       <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
         {mode === 'register' && (
           <>
@@ -98,13 +92,11 @@ export default function AuthScreen() {
             mode === 'login' ? '🔐 Sign In' : '✨ Create Account'}
         </button>
       </form>
-
       <div style={{ margin: '24px 0', display: 'flex', alignItems: 'center', gap: 10 }}>
         <div className="divider" style={{ flex: 1, margin: 0 }} />
         <span style={{ fontSize: 12, color: 'var(--text3)' }}>DEMO ACCOUNTS</span>
         <div className="divider" style={{ flex: 1, margin: 0 }} />
       </div>
-
       <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
         {DEMO_USERS.map(u => (
           <button

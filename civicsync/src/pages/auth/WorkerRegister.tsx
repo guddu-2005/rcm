@@ -6,14 +6,12 @@ import { DEPARTMENTS, type Department } from '../../types'
 import { FormError } from '../../components/ui'
 import { HardHat, ArrowLeft } from 'lucide-react'
 import toast from 'react-hot-toast'
-
 export default function WorkerRegister() {
   const navigate = useNavigate()
   const { login } = useStore()
   const [form, setForm] = useState({ name: '', email: '', password: '', employeeId: '', department: '' as Department | '' })
   const [errors, setErrors] = useState<Record<string, string>>({})
   const [loading, setLoading] = useState(false)
-
   const validate = () => {
     const e: Record<string, string> = {}
     if (!form.name.trim()) e.name = 'Full name is required'
@@ -25,7 +23,6 @@ export default function WorkerRegister() {
     setErrors(e)
     return Object.keys(e).length === 0
   }
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     if (!validate()) return
@@ -37,9 +34,7 @@ export default function WorkerRegister() {
     navigate('/worker/dashboard')
     setLoading(false)
   }
-
   const set = (k: string, v: string) => { setForm(f => ({ ...f, [k]: v })); if (errors[k]) setErrors(e => ({ ...e, [k]: '' })) }
-
   return (
     <div className="min-h-screen bg-gradient-to-br from-amber-50 to-orange-100 flex items-center justify-center p-4">
       <div className="bg-white rounded-3xl shadow-xl w-full max-w-md p-8 animate-fade-up">

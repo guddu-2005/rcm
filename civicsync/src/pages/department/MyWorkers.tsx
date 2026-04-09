@@ -2,13 +2,11 @@ import { useStore } from '../../store'
 import { getWorkers, getComplaints } from '../../storage'
 import { Avatar, EmptyState } from '../../components/ui'
 import { Users } from 'lucide-react'
-
 export default function MyWorkers() {
   const { session } = useStore()
   const dept = session?.department
   const workers = getWorkers().filter(w => w.department === dept)
   const complaints = getComplaints()
-
   return (
     <div>
       <div className="mb-6">

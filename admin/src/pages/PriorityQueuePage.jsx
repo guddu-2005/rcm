@@ -5,16 +5,13 @@ import TopNavbar from '../components/TopNavbar';
 import { PriorityBadge, CategoryChip, StatusBadge, DuplicateBadge, ScoreBar, timeAgo } from '../components/ComplaintComponents';
 import { calculatePriorityScore, getPriorityLabel } from '../intelligence/priorityEngine';
 import { Flame, TrendingUp, AlertTriangle } from 'lucide-react';
-
 export default function PriorityQueuePage() {
   const { rankedComplaints, stats, subscribeAll, loading } = useComplaintStore();
   const navigate = useNavigate();
-
   useEffect(() => {
     const unsub = subscribeAll();
     return unsub;
   }, []);
-
   const activeComplaints = rankedComplaints.filter(c => c.status !== 'resolved');
   const critical = activeComplaints.filter(c => (c.priorityScore || calculatePriorityScore(c)) >= 75);
   const high = activeComplaints.filter(c => {
@@ -26,14 +23,12 @@ export default function PriorityQueuePage() {
     return s >= 35 && s < 55;
   });
   const low = activeComplaints.filter(c => (c.priorityScore || calculatePriorityScore(c)) < 35);
-
   const groups = [
     { label: '🔴 Critical', color: 'var(--red)', complaints: critical, bg: 'rgba(239,68,68,0.05)', border: 'rgba(239,68,68,0.25)' },
     { label: '🟠 High Priority', color: 'var(--orange)', complaints: high, bg: 'rgba(249,115,22,0.05)', border: 'rgba(249,115,22,0.25)' },
     { label: '🟡 Medium Priority', color: 'var(--yellow)', complaints: medium, bg: 'rgba(245,158,11,0.05)', border: 'rgba(245,158,11,0.25)' },
     { label: '🟢 Low Priority', color: 'var(--green)', complaints: low, bg: 'rgba(16,185,129,0.05)', border: 'rgba(16,185,129,0.25)' },
   ];
-
   return (
     <>
       <TopNavbar
@@ -41,7 +36,7 @@ export default function PriorityQueuePage() {
         subtitle={`${activeComplaints.length} active · Auto-ranked by AI priority engine`}
       />
       <div className="page-content animate-fadeIn">
-        {/* Priority Summary */}
+        {}
         <div className="kpi-grid mb-6">
           <div className="kpi-card" style={{ '--color': 'var(--red)' }}>
             <div className="kpi-icon" style={{ background: 'rgba(239,68,68,0.1)', color: 'var(--red)' }}>🔴</div>
@@ -64,8 +59,7 @@ export default function PriorityQueuePage() {
             <div className="kpi-label">Low Priority</div>
           </div>
         </div>
-
-        {/* How Priority Works */}
+        {}
         <div className="card mb-6">
           <div className="card-header">
             <span className="card-title">🧠 Priority Scoring Formula</span>
@@ -90,8 +84,7 @@ export default function PriorityQueuePage() {
             ✨ Final score is multiplied by <strong style={{ color: 'var(--text-secondary)' }}>category urgency</strong> (Fire/Flood × 1.5) and <strong style={{ color: 'var(--text-secondary)' }}>location importance</strong> (Hospital area × 1.5)
           </div>
         </div>
-
-        {/* Priority Groups */}
+        {}
         {groups.map(group => group.complaints.length > 0 && (
           <div key={group.label} style={{ marginBottom: 24 }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 12 }}>
@@ -157,7 +150,6 @@ export default function PriorityQueuePage() {
             </div>
           </div>
         ))}
-
         {activeComplaints.length === 0 && !loading && (
           <div className="empty-state">
             <div className="empty-icon">🎉</div>

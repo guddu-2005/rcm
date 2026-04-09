@@ -6,10 +6,8 @@ import TopNavbar from '../components/TopNavbar';
 import { classifyComplaint, detectSeverity } from '../intelligence/priorityEngine';
 import toast from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
-
 const CATEGORIES = ['water', 'electricity', 'road', 'health', 'sanitation', 'fire', 'flood', 'crime', 'gas', 'other'];
 const AREAS = ['Sector 1', 'Sector 2', 'Old Town', 'Market Area', 'Station Road', 'Ashok Nagar', 'Gandhi Nagar', 'Lake Area', 'Industrial Zone', 'Hospital Zone', 'Bus Stand', 'Central Park'];
-
 export default function NewComplaintPage() {
   const { profile } = useAuthStore();
   const navigate = useNavigate();
@@ -18,10 +16,8 @@ export default function NewComplaintPage() {
     reporterName: '', reporterPhone: '', populationImpact: 5,
   });
   const [loading, setLoading] = useState(false);
-
   const update = (key, val) => {
     const updated = { ...form, [key]: val };
-    // Auto-classify
     if (key === 'title' || key === 'description') {
       const text = (updated.title + ' ' + updated.description);
       if (text.trim().length > 5) {
@@ -31,7 +27,6 @@ export default function NewComplaintPage() {
     }
     setForm(updated);
   };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!form.title || !form.area) { toast.error('Title and area are required'); return; }
@@ -60,7 +55,6 @@ export default function NewComplaintPage() {
       setLoading(false);
     }
   };
-
   return (
     <>
       <TopNavbar title="Add Complaint" subtitle="Manual entry from admin panel" />
@@ -135,8 +129,7 @@ export default function NewComplaintPage() {
                   style={{ width: '100%', accentColor: 'var(--accent)' }}
                 />
               </div>
-
-              {/* AI Preview */}
+              {}
               {(form.category || form.severity) && (
                 <div className="alert alert-info">
                   <span>🤖</span>
@@ -148,7 +141,6 @@ export default function NewComplaintPage() {
                   </div>
                 </div>
               )}
-
               <div style={{ display: 'flex', gap: 10 }}>
                 <button type="button" className="btn btn-secondary flex-1" onClick={() => navigate('/complaints')}>Cancel</button>
                 <button type="submit" className="btn btn-primary flex-1" disabled={loading}>

@@ -5,7 +5,6 @@ import { StatusBadge, PriorityBadge, EmptyState } from '../../components/ui'
 import { type ComplaintStatus } from '../../types'
 import { RefreshCw, CheckCircle, X, Image as ImageIcon } from 'lucide-react'
 import toast from 'react-hot-toast'
-
 export default function UpdateTask() {
   const { session, complaints, refreshComplaints } = useStore()
   const [selected, setSelected] = useState<string | null>(null)
@@ -13,13 +12,10 @@ export default function UpdateTask() {
   const [note, setNote] = useState('')
   const [photo, setPhoto] = useState('')
   const [loading, setLoading] = useState(false)
-
   const myTasks = complaints
     .filter(c => c.assignedWorkerId === session?.userId && !['Resolved','Closed'].includes(c.status))
     .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
-
   const selectedComplaint = complaints.find(c => c.id === selected)
-
   const handlePhoto = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
     if (!file) return
@@ -27,7 +23,6 @@ export default function UpdateTask() {
     reader.onload = ev => setPhoto(ev.target?.result as string)
     reader.readAsDataURL(file)
   }
-
   const handleUpdate = async () => {
     if (!selected || !note.trim()) { toast.error('Please add a note before updating'); return }
     setLoading(true)
@@ -42,19 +37,17 @@ export default function UpdateTask() {
     setSelected(null); setNote(''); setPhoto(''); setNewStatus('In Progress')
     setLoading(false)
   }
-
   return (
     <div>
       <div className="mb-6">
         <h1 className="font-display text-2xl font-bold text-gray-900 mb-1">Update Task</h1>
         <p className="text-sm text-gray-500">Select a task to update its status or mark as resolved.</p>
       </div>
-
       {myTasks.length === 0 ? (
         <div className="cs-card"><EmptyState icon={<RefreshCw size={28} />} title="No active tasks" sub="All your tasks are completed!" /></div>
       ) : (
         <div className="grid lg:grid-cols-2 gap-6">
-          {/* Task List */}
+          {}
           <div className="space-y-3">
             <h3 className="font-semibold text-gray-700 text-sm mb-2">Select a Task</h3>
             {myTasks.map(c => (
@@ -69,12 +62,10 @@ export default function UpdateTask() {
               </button>
             ))}
           </div>
-
-          {/* Update Form */}
+          {}
           {selectedComplaint ? (
             <div className="cs-card">
               <h3 className="font-display font-bold text-gray-900 mb-4">Update: {selectedComplaint.title}</h3>
-
               <div className="mb-4">
                 <label className="cs-label">New Status</label>
                 <div className="flex gap-2">
@@ -90,14 +81,12 @@ export default function UpdateTask() {
                   ))}
                 </div>
               </div>
-
               <div className="mb-4">
                 <label className="cs-label">Note / Update *</label>
                 <textarea className="cs-input min-h-[100px] resize-none"
                   placeholder={newStatus === 'Resolved' ? 'Describe what was done to resolve this issue…' : 'Current progress update…'}
                   value={note} onChange={e => setNote(e.target.value)} />
               </div>
-
               <div className="mb-5">
                 <label className="cs-label flex items-center gap-1"><ImageIcon size={11} /> Resolution Photo (Optional)</label>
                 {photo ? (
@@ -113,7 +102,6 @@ export default function UpdateTask() {
                   </label>
                 )}
               </div>
-
               <div className="flex gap-3">
                 <button onClick={handleUpdate} disabled={loading}
                   className={`flex-1 justify-center py-3 font-bold rounded-xl text-white flex items-center gap-2 transition-all ${newStatus === 'Resolved' ? 'bg-green-600 hover:bg-green-700' : 'bg-amber-600 hover:bg-amber-700'}`}>

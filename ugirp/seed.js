@@ -1,7 +1,6 @@
-// UGIRP Seed Script — populates ugirp_complaints collection
+
 const { initializeApp } = require('firebase/app')
 const { getFirestore, collection, addDoc, serverTimestamp, getDocs, deleteDoc } = require('firebase/firestore')
-
 const firebaseConfig = {
   apiKey: "AIzaSyAECw9foiA16-QNnnBYIbURDYfyzBTTBGA",
   authDomain: "public-grivance-portal.firebaseapp.com",
@@ -10,15 +9,12 @@ const firebaseConfig = {
   messagingSenderId: "760260395924",
   appId: "1:760260395924:web:8224deebd52e107f884581",
 }
-
 const app = initializeApp(firebaseConfig)
 const db = getFirestore(app)
-
 const CATEGORIES = ['water', 'electricity', 'road', 'health', 'sanitation', 'fire', 'police', 'parks']
 const PRIORITIES = ['P1', 'P2', 'P3']
 const STATUSES = ['submitted', 'under_review', 'assigned', 'in_progress', 'resolved', 'escalated']
 const WARDS = ['Bapuji Nagar', 'Saheed Nagar', 'Jaydev Vihar', 'Nayapalli', 'Khandagiri', 'Rasulgarh', 'Patia', 'Unit-4', 'Mancheswar', 'Chandrasekharpur']
-
 const COMPLAINTS = [
   { title: 'Water pipeline burst near school gate', category: 'water', priority: 'P1', score: 87, ward: 'Unit-4' },
   { title: 'Large pothole causing road accidents on MG Road', category: 'road', priority: 'P1', score: 82, ward: 'Saheed Nagar' },
@@ -41,23 +37,19 @@ const COMPLAINTS = [
   { title: 'Park playground equipment broken and dangerous', category: 'parks', priority: 'P3', score: 29, ward: 'Saheed Nagar' },
   { title: 'Dengue cases rising due to uncleared pool', category: 'health', priority: 'P1', score: 88, ward: 'Mancheswar' },
 ]
-
 const rand = arr => arr[Math.floor(Math.random() * arr.length)]
 const daysAgo = (n) => {
   const d = new Date()
   d.setDate(d.getDate() - n)
   return d.toISOString()
 }
-
 async function seed() {
   console.log('🚀 Seeding UGIRP complaints...\n')
-
   for (let i = 0; i < COMPLAINTS.length; i++) {
     const template = COMPLAINTS[i]
     const status = i < 5 ? 'submitted' : i < 10 ? 'in_progress' : i < 15 ? 'assigned' : i < 18 ? 'resolved' : 'escalated'
     const daysOld = Math.floor(Math.random() * 14)
     const createdAt = daysAgo(daysOld)
-
     const doc = {
       ticketId: `${template.category.toUpperCase().slice(0,3)}-${Date.now().toString(36).toUpperCase().slice(-4)}${i}`,
       title: template.title,
@@ -118,13 +110,10 @@ async function seed() {
       createdAt,
       updatedAt: createdAt,
     }
-
     await addDoc(collection(db, 'ugirp_complaints'), doc)
     console.log(`✅ ${i + 1}/${COMPLAINTS.length}: ${template.title.slice(0, 50)}`)
   }
-
   console.log('\n✨ Seed complete! Visit http://localhost:3000')
   process.exit(0)
 }
-
 seed().catch(e => { console.error(e); process.exit(1) })

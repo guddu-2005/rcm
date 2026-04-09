@@ -3,15 +3,12 @@ import { lsGet, lsSet } from '../../storage'
 import { FormError } from '../../components/ui'
 import { Settings, Lock } from 'lucide-react'
 import toast from 'react-hot-toast'
-
 const ADMIN_KEY = 'cs_admin_password'
-
 export default function AdminSettings() {
   const [current, setCurrent] = useState('')
   const [newPw, setNewPw] = useState('')
   const [confirm, setConfirm] = useState('')
   const [error, setError] = useState('')
-
   const handleChange = (e: React.FormEvent) => {
     e.preventDefault()
     setError('')
@@ -23,7 +20,6 @@ export default function AdminSettings() {
     toast.success('Password updated successfully!')
     setCurrent(''); setNewPw(''); setConfirm('')
   }
-
   return (
     <div className="max-w-md">
       <div className="mb-6">

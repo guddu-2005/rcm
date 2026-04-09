@@ -2,7 +2,6 @@ import { useStore } from '../../store'
 import { StatusBadge, PriorityBadge, EmptyState } from '../../components/ui'
 import { ClipboardList, MapPin } from 'lucide-react'
 import { timeAgo } from '../../storage'
-
 export default function MyTasks() {
   const { session, complaints } = useStore()
   const myTasks = complaints
@@ -11,17 +10,14 @@ export default function MyTasks() {
       const prio = { High: 0, Medium: 1, Low: 2 }
       return prio[a.priority] - prio[b.priority] || new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
     })
-
   const active = myTasks.filter(c => !['Resolved','Closed'].includes(c.status))
   const done = myTasks.filter(c => c.status === 'Resolved' || c.status === 'Closed')
-
   return (
     <div>
       <div className="mb-6">
         <h1 className="font-display text-2xl font-bold text-gray-900 mb-1">My Tasks</h1>
         <p className="text-sm text-gray-500">{active.length} active · {done.length} completed</p>
       </div>
-
       {myTasks.length === 0 ? (
         <div className="cs-card"><EmptyState icon={<ClipboardList size={28} />} title="No tasks assigned yet" sub="The department will assign complaints to you." /></div>
       ) : (

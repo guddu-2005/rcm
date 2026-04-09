@@ -6,7 +6,6 @@ import { DEPARTMENTS, type Department } from '../../types'
 import { FormError } from '../../components/ui'
 import { Building2, ArrowLeft } from 'lucide-react'
 import toast from 'react-hot-toast'
-
 export default function DepartmentLogin() {
   const navigate = useNavigate()
   const { login } = useStore()
@@ -15,7 +14,6 @@ export default function DepartmentLogin() {
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setError('')
@@ -31,7 +29,6 @@ export default function DepartmentLogin() {
     navigate('/department/dashboard')
     setLoading(false)
   }
-
   const DEPT_CREDS: Record<string, string> = {
     'Water Supply': 'water@dept.gov',
     'Garbage & Sanitation': 'garbage@dept.gov',
@@ -40,7 +37,6 @@ export default function DepartmentLogin() {
     'Public Transport': 'transport@dept.gov',
     'Traffic Management': 'traffic@dept.gov',
   }
-
   return (
     <div className="min-h-screen bg-gradient-to-br from-green-50 to-teal-100 flex items-center justify-center p-4">
       <div className="bg-white rounded-3xl shadow-xl w-full max-w-md p-8 animate-fade-up">

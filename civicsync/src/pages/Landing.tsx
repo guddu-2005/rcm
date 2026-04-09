@@ -1,7 +1,5 @@
 import { useEffect, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
-
-// ─── Role Data ────────────────────────────────────────────────
 const ROLES = [
   {
     id: 'citizen',
@@ -48,8 +46,6 @@ const ROLES = [
     tagBg: 'rgba(251,191,36,0.12)',
   },
 ]
-
-// ─── Lifecycle Steps ──────────────────────────────────────────
 const STAGES = [
   { label: 'Submission',  icon: '📄', sub: 'Grievance ingested via portal endpoints',    glow: '#3b82f6', glowRgb: '59,130,246' },
   { label: 'AI Analysis', icon: '🧠', sub: 'Neural network categorization & tagging',    glow: '#a855f7', glowRgb: '168,85,247' },
@@ -58,8 +54,6 @@ const STAGES = [
   { label: 'Tracking',    icon: '📡', sub: 'Real-time status telemetry dashboard',        glow: '#06b6d4', glowRgb: '6,182,212'  },
   { label: 'Resolution',  icon: '✅', sub: 'Verified closure and citizen feedback',       glow: '#22d3ee', glowRgb: '34,211,238' },
 ]
-
-// ─── Feature Nexus ────────────────────────────────────────────
 const FEATURES = [
   { icon: '⚡', title: 'Neural Auto-Routing',    desc: 'AI classifies and routes each complaint to the right department instantly.' },
   { icon: '📡', title: 'Real-Time Telemetry',    desc: 'Citizens see every status change — Submitted to Closed — live.' },
@@ -68,23 +62,16 @@ const FEATURES = [
   { icon: '🔔', title: 'Instant Alerts',          desc: 'Toast notifications and timeline logs keep every stakeholder informed.' },
   { icon: '📱', title: 'Mobile-First Design',     desc: 'Fully responsive — works flawlessly on phones, tablets, and desktops.' },
 ]
-
-// ─── Inline CSS (injected once) ───────────────────────────────
 const GLOBAL_CSS = `
   @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@300;500;600;700;800&display=swap');
-
   .cs-land { font-family: 'Plus Jakarta Sans', sans-serif; }
   .cs-land .sg { font-family: 'Space Grotesk', sans-serif; }
-
-  /* Mesh BG */
   .cs-mesh-bg {
     background:
       radial-gradient(circle at 0% 0%, rgba(30,58,138,0.35) 0%, transparent 50%),
       radial-gradient(circle at 100% 100%, rgba(79,70,229,0.25) 0%, transparent 50%),
       radial-gradient(circle at 50% 50%, #0f172a 0%, #020617 100%);
   }
-
-  /* Glassmorphism */
   .cs-glass {
     background: rgba(15,23,42,0.65);
     backdrop-filter: blur(14px);
@@ -92,8 +79,6 @@ const GLOBAL_CSS = `
     border: 1px solid rgba(255,255,255,0.09);
     box-shadow: 0 8px 32px rgba(0,0,0,0.7);
   }
-
-  /* Cyber button shimmer */
   .cs-cyber-btn {
     position: relative;
     background: linear-gradient(90deg,#0ea5e9,#6366f1);
@@ -111,8 +96,6 @@ const GLOBAL_CSS = `
   }
   .cs-cyber-btn:hover::before { left:100%; }
   .cs-cyber-btn:active { transform:scale(0.97); }
-
-  /* Outline cyber btn */
   .cs-ghost-btn {
     background: rgba(255,255,255,0.05);
     border: 1px solid rgba(255,255,255,0.12);
@@ -121,8 +104,6 @@ const GLOBAL_CSS = `
     cursor:pointer;
   }
   .cs-ghost-btn:hover { background:rgba(255,255,255,0.1); }
-
-  /* Flow line */
   .cs-flow-track {
     position:absolute;
     top:48px;left:0;
@@ -138,8 +119,6 @@ const GLOBAL_CSS = `
     animation:csFlow 2.8s infinite linear;
   }
   @keyframes csFlow { from{left:-220px} to{left:100%} }
-
-  /* 3-D Glass node */
   .cs-node {
     width:96px;height:96px;
     border-radius:50%;
@@ -175,7 +154,6 @@ const GLOBAL_CSS = `
     transition:opacity .4s;
   }
   .cs-node:hover .cs-node-glow { opacity:0.85; }
-
   .cs-step-tag {
     background:rgba(0,0,0,0.55);
     border:1px solid rgba(255,255,255,0.14);
@@ -188,8 +166,6 @@ const GLOBAL_CSS = `
     transition:all .3s;
     white-space:nowrap;
   }
-
-  /* Role card */
   .cs-role-card {
     background:rgba(15,23,42,0.55);
     border: 1.5px solid rgba(255,255,255,0.08);
@@ -205,8 +181,6 @@ const GLOBAL_CSS = `
     border-color:var(--rc-border);
     box-shadow:0 0 28px var(--rc-glow), 0 20px 40px rgba(0,0,0,0.5);
   }
-
-  /* Feature card */
   .cs-feat-card {
     background:rgba(15,23,42,0.55);
     border:1px solid rgba(255,255,255,0.07);
@@ -220,19 +194,13 @@ const GLOBAL_CSS = `
     box-shadow:0 0 20px rgba(0,242,255,0.08);
     transform:translateY(-3px);
   }
-
-  /* Circuit overlay */
   .cs-circuit {
     position:absolute;inset:0;
     background-image:url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M10 10 L90 10 L90 90 L10 90 Z' fill='none' stroke='rgba(255,255,255,0.025)' stroke-width='0.5'/%3E%3Ccircle cx='10' cy='10' r='1' fill='rgba(255,255,255,0.04)'/%3E%3C/svg%3E");
     opacity:0.6;pointer-events:none;
   }
-
-  /* Fade-in on scroll */
   .cs-fi { opacity:0; transform:translateY(28px); transition:all .75s cubic-bezier(.4,0,.2,1); }
   .cs-fi.cs-vis { opacity:1; transform:translateY(0); }
-
-  /* Stat float cards */
   .cs-stat-card {
     background:#fff;
     border-radius:1rem;
@@ -241,18 +209,12 @@ const GLOBAL_CSS = `
     box-shadow:0 8px 30px rgba(0,0,0,0.35);
     min-width:80px;
   }
-
-  /* Pulse dot */
   @keyframes csPulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.6;transform:scale(1.4)} }
   .cs-pulse-dot { animation:csPulse 1.8s infinite; }
 `
-
-// ─── Component ────────────────────────────────────────────────
 export default function Landing() {
   const navigate = useNavigate()
   const obsRef = useRef<IntersectionObserver | null>(null)
-
-  // Inject styles once
   useEffect(() => {
     if (document.getElementById('cs-land-style')) return
     const tag = document.createElement('style')
@@ -261,8 +223,6 @@ export default function Landing() {
     document.head.appendChild(tag)
     return () => { document.getElementById('cs-land-style')?.remove() }
   }, [])
-
-  // Intersection observer for fade-ins
   useEffect(() => {
     obsRef.current = new IntersectionObserver(entries => {
       entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('cs-vis') })
@@ -270,11 +230,9 @@ export default function Landing() {
     document.querySelectorAll('.cs-fi').forEach(el => obsRef.current!.observe(el))
     return () => obsRef.current?.disconnect()
   }, [])
-
   return (
     <div className="cs-land cs-mesh-bg min-h-screen overflow-x-hidden text-slate-100">
-
-      {/* ─── NAV ─── */}
+      {}
       <nav className="cs-glass sticky top-0 z-50" style={{ borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
         <div className="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
           <div className="flex items-center gap-3">
@@ -298,29 +256,26 @@ export default function Landing() {
               Initialize Portal
             </button>
           </div>
-          {/* Mobile btn */}
+          {}
           <button onClick={() => navigate('/citizen/register')}
             className="md:hidden cs-cyber-btn px-4 py-2 rounded-lg text-white font-bold text-xs">
             Start
           </button>
         </div>
       </nav>
-
-      {/* ─── HERO ─── */}
+      {}
       <header className="relative pt-20 pb-40 overflow-hidden">
-        {/* Subtle dot grid */}
+        {}
         <div className="pointer-events-none absolute inset-0"
           style={{ backgroundImage:'radial-gradient(circle at 1px 1px,rgba(255,255,255,0.04) 1px,transparent 0)', backgroundSize:'36px 36px' }} />
-
         <div className="max-w-7xl mx-auto px-6 grid lg:grid-cols-2 gap-16 items-center relative z-10">
-          {/* Left */}
+          {}
           <div className="space-y-8">
             <div className="inline-flex items-center gap-3 cs-glass px-4 py-2 rounded-full"
               style={{ border:'1px solid rgba(34,211,238,0.3)' }}>
               <span className="cs-pulse-dot w-2 h-2 rounded-full bg-cyan-400 inline-block" />
               <span className="text-xs font-black uppercase tracking-widest text-cyan-400">Quantum Governance v2.0</span>
             </div>
-
             <h1 className="sg font-bold leading-[0.92] tracking-tighter">
               <span className="block text-5xl md:text-7xl text-white">THE FUTURE OF</span>
               <span className="block text-5xl md:text-7xl mt-1"
@@ -328,12 +283,10 @@ export default function Landing() {
                 CIVIC RESOLUTION
               </span>
             </h1>
-
             <p className="text-lg text-slate-400 max-w-xl font-light leading-relaxed">
               Decentralizing public grievance through advanced AI orchestration. We connect citizens to
               municipal infrastructure in a high-fidelity real-time nexus.
             </p>
-
             <div className="flex flex-col sm:flex-row gap-4">
               <button onClick={() => navigate('/citizen/register')}
                 className="cs-cyber-btn px-10 py-4 rounded-2xl text-white font-bold text-lg"
@@ -345,11 +298,8 @@ export default function Landing() {
                 Admin Portal →
               </button>
             </div>
-
-
           </div>
-
-          {/* Right — glass feature cards */}
+          {}
           <div className="relative hidden lg:block">
             <div className="absolute -inset-6 rounded-[3rem] blur-3xl"
               style={{ background:'linear-gradient(135deg,rgba(34,211,238,0.15),rgba(59,130,246,0.1))' }} />
@@ -372,8 +322,7 @@ export default function Landing() {
           </div>
         </div>
       </header>
-
-      {/* ─── STAKEHOLDERS / ROLE SELECTOR ─── */}
+      {}
       <section id="stakeholders" className="py-28 px-6 relative" style={{ background:'rgba(255,255,255,0.025)' }}>
         <div className="cs-circuit" />
         <div className="max-w-6xl mx-auto relative z-10">
@@ -384,7 +333,6 @@ export default function Landing() {
               Select your role to access your personalized command interface.
             </p>
           </div>
-
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
             {ROLES.map((r, i) => (
               <button key={r.id}
@@ -411,8 +359,7 @@ export default function Landing() {
           </div>
         </div>
       </section>
-
-      {/* ─── TRANSPARENCY PROTOCOL / LIFECYCLE ─── */}
+      {}
       <section id="protocol" className="py-36 relative overflow-hidden">
         <div className="cs-circuit" />
         <div className="max-w-7xl mx-auto px-6 text-center relative z-10">
@@ -420,20 +367,18 @@ export default function Landing() {
             <span className="text-xs font-black uppercase tracking-[0.5em] text-cyan-400">System Workflow</span>
             <h2 className="sg text-5xl md:text-7xl font-bold text-white leading-tight">Transparency Protocol</h2>
           </div>
-
           <div className="relative py-16 overflow-x-auto" style={{ scrollbarWidth:'none' }}>
-            {/* Flow line */}
+            {}
             <div className="cs-flow-track hidden md:block">
               <div className="cs-flow-pulse" />
             </div>
-
             <div className="flex flex-row md:justify-between items-start gap-10 relative px-8"
               style={{ minWidth: '1100px' }}>
               {STAGES.map((s, i) => (
                 <div key={s.label}
                   className="cs-fi flex flex-col items-center gap-8 w-40 shrink-0"
                   style={{ transitionDelay: `${i * 100}ms` }}>
-                  {/* 3-D Glass Node */}
+                  {}
                   <div className="cs-node"
                     style={{ '--nd-glow': s.glow } as React.CSSProperties}>
                     <div className="cs-node-glow" style={{ background: s.glow }} />
@@ -441,7 +386,6 @@ export default function Landing() {
                       {s.icon}
                     </span>
                   </div>
-
                   <div className="space-y-2">
                     <span className="cs-step-tag text-white"
                       style={{ borderColor: `rgba(${s.glowRgb},0.4)` }}>
@@ -457,8 +401,7 @@ export default function Landing() {
           </div>
         </div>
       </section>
-
-      {/* ─── FEATURE NEXUS ─── */}
+      {}
       <section id="nexus" className="py-28 px-6" style={{ background:'rgba(255,255,255,0.02)' }}>
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-14 cs-fi">
@@ -468,7 +411,6 @@ export default function Landing() {
               Built to handle the full complaint lifecycle with transparency, speed, and precision at every stage.
             </p>
           </div>
-
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
             {FEATURES.map((f, i) => (
               <div key={f.title}
@@ -482,8 +424,7 @@ export default function Landing() {
           </div>
         </div>
       </section>
-
-      {/* ─── CTA BANNER ─── */}
+      {}
       <section className="py-28 px-6 relative overflow-hidden">
         <div className="absolute inset-0 pointer-events-none"
           style={{ background:'radial-gradient(ellipse at center,rgba(34,211,238,0.08) 0%,transparent 70%)' }} />
@@ -507,8 +448,7 @@ export default function Landing() {
           </div>
         </div>
       </section>
-
-      {/* ─── FOOTER ─── */}
+      {}
       <footer className="cs-glass py-16 px-6" style={{ borderTop:'1px solid rgba(255,255,255,0.06)' }}>
         <div className="max-w-7xl mx-auto grid md:grid-cols-3 gap-10">
           <div className="col-span-2 space-y-5">
@@ -552,7 +492,6 @@ export default function Landing() {
           <p className="text-xs text-slate-600">Your Voice. Your City. Resolved.</p>
         </div>
       </footer>
-
     </div>
   )
 }

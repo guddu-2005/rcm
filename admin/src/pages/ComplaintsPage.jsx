@@ -7,11 +7,9 @@ import {
 } from '../components/ComplaintComponents';
 import { Search, Filter, Download, Plus, SlidersHorizontal } from 'lucide-react';
 import { getPriorityLabel, calculatePriorityScore } from '../intelligence/priorityEngine';
-
 const STATUSES = ['all', 'submitted', 'pending', 'underReview', 'assigned', 'inProgress', 'escalated', 'resolved'];
 const CATEGORIES = ['all', 'water', 'electricity', 'road', 'health', 'sanitation', 'fire', 'flood', 'crime', 'other'];
 const SEVERITIES = ['all', 'critical', 'high', 'medium', 'low'];
-
 export default function ComplaintsPage() {
   const { rankedComplaints, loading, subscribeAll } = useComplaintStore();
   const navigate = useNavigate();
@@ -22,12 +20,10 @@ export default function ComplaintsPage() {
   const [sortBy, setSortBy] = useState('priority');
   const [page, setPage] = useState(1);
   const PAGE_SIZE = 15;
-
   useEffect(() => {
     const unsub = subscribeAll();
     return unsub;
   }, []);
-
   const filtered = useMemo(() => {
     let list = [...rankedComplaints];
     if (search) {
@@ -55,10 +51,8 @@ export default function ComplaintsPage() {
     else if (sortBy === 'reports') list.sort((a, b) => (b.reportCount || 1) - (a.reportCount || 1));
     return list;
   }, [rankedComplaints, search, statusFilter, categoryFilter, severityFilter, sortBy]);
-
   const totalPages = Math.ceil(filtered.length / PAGE_SIZE);
   const paginated = filtered.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
-
   const exportCSV = () => {
     const headers = ['Ticket ID', 'Title', 'Category', 'Status', 'Priority Score', 'Location', 'Date'];
     const rows = filtered.map(c => [
@@ -75,7 +69,6 @@ export default function ComplaintsPage() {
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a'); a.href = url; a.download = 'complaints.csv'; a.click();
   };
-
   return (
     <>
       <TopNavbar
@@ -93,7 +86,7 @@ export default function ComplaintsPage() {
         }
       />
       <div className="page-content animate-fadeIn">
-        {/* Filters */}
+        {}
         <div className="card mb-4">
           <div className="filter-row">
             <div className="search-bar" style={{ minWidth: 300 }}>
@@ -124,8 +117,7 @@ export default function ComplaintsPage() {
             </div>
           </div>
         </div>
-
-        {/* Table */}
+        {}
         <div className="card" style={{ padding: 0, overflow: 'hidden' }}>
           {loading ? (
             <div style={{ padding: 40, textAlign: 'center' }}>
@@ -192,8 +184,7 @@ export default function ComplaintsPage() {
             </table>
           )}
         </div>
-
-        {/* Pagination */}
+        {}
         {totalPages > 1 && (
           <div className="flex items-center justify-between mt-4">
             <span style={{ fontSize: 13, color: 'var(--text-muted)' }}>

@@ -4,26 +4,22 @@ import { auth, db } from '../firebase';
 import { doc, getDoc, setDoc, serverTimestamp } from 'firebase/firestore';
 import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
-
 const DEMO_ACCOUNTS = [
   { email: 'superadmin@grievanceiq.ai', password: 'Admin@123', role: 'superAdmin', name: 'Super Admin' },
   { email: 'roads@grievanceiq.ai', password: 'Dept@123', role: 'department', name: 'Roads Dept', dept: 'road' },
   { email: 'water@grievanceiq.ai', password: 'Dept@123', role: 'department', name: 'Water Dept', dept: 'water' },
   { email: 'power@grievanceiq.ai', password: 'Dept@123', role: 'department', name: 'Electricity Dept', dept: 'electricity' },
 ];
-
 export default function LoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
-
   const handleLogin = async (e) => {
     e.preventDefault();
     setLoading(true);
     try {
       const cred = await signInWithEmailAndPassword(auth, email, password);
-      // Ensure user doc exists
       const ref = doc(db, 'adminUsers', cred.user.uid);
       const snap = await getDoc(ref);
       if (!snap.exists()) {
@@ -46,12 +42,10 @@ export default function LoginPage() {
       setLoading(false);
     }
   };
-
   const fillDemo = (account) => {
     setEmail(account.email);
     setPassword(account.password);
   };
-
   return (
     <div className="login-page">
       <div className="login-bg" />
@@ -61,7 +55,6 @@ export default function LoginPage() {
           <h1 className="login-title">GrievanceIQ</h1>
           <p className="login-desc">Smart City Grievance Intelligence Platform</p>
         </div>
-
         <form onSubmit={handleLogin} style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
           <div className="input-group">
             <label className="input-label">Email Address</label>
@@ -97,9 +90,7 @@ export default function LoginPage() {
             {loading ? <span className="spinner" style={{ width: 18, height: 18, borderWidth: 2 }} /> : '🔐 Sign In to Dashboard'}
           </button>
         </form>
-
         <div className="divider" />
-
         <div>
           <p style={{ fontSize: 11, color: 'var(--text-muted)', textAlign: 'center', marginBottom: 10, fontWeight: 600, textTransform: 'uppercase', letterSpacing: 1 }}>
             Demo Accounts
@@ -135,7 +126,6 @@ export default function LoginPage() {
             ))}
           </div>
         </div>
-
         <p style={{ textAlign: 'center', fontSize: 11, color: 'var(--text-muted)', marginTop: 16 }}>
           First-time login creates the admin account automatically
         </p>

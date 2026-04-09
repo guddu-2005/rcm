@@ -1,16 +1,13 @@
 import { useState } from 'react';
 import useStore from '../store';
 import toast from 'react-hot-toast';
-
 export default function ProfileScreen() {
   const { user, profile, logout, updateProfile: saveProfile } = useStore();
   const [editing, setEditing] = useState(false);
   const [name, setName] = useState(profile?.name || '');
   const [phone, setPhone] = useState(profile?.phone || '');
   const [saving, setSaving] = useState(false);
-
   const initial = (profile?.name || user?.email || 'C').charAt(0).toUpperCase();
-
   const save = async () => {
     setSaving(true);
     await saveProfile({ name, phone });
@@ -18,28 +15,25 @@ export default function ProfileScreen() {
     setSaving(false);
     toast.success('Profile updated!');
   };
-
   const handleLogout = async () => {
     if (confirm('Sign out?')) {
       await logout();
     }
   };
-
   return (
     <div className="screen">
       <div className="topbar">
         <div className="topbar-title">Profile</div>
       </div>
       <div className="page">
-        {/* Avatar */}
+        {}
         <div style={{ textAlign: 'center', padding: '20px 0 24px' }}>
           <div className="profile-avatar">{initial}</div>
           <div style={{ fontWeight: 800, fontSize: 20 }}>{profile?.name || user?.displayName || 'Citizen'}</div>
           <div style={{ color: 'var(--text2)', fontSize: 14, marginTop: 4 }}>{user?.email}</div>
           {profile?.phone && <div style={{ color: 'var(--text2)', fontSize: 13, marginTop: 2 }}>📱 {profile.phone}</div>}
         </div>
-
-        {/* Edit Profile */}
+        {}
         {!editing ? (
           <button className="btn btn-outline" onClick={() => setEditing(true)} style={{ marginBottom: 20 }}>
             ✏️ Edit Profile
@@ -62,8 +56,7 @@ export default function ProfileScreen() {
             </div>
           </div>
         )}
-
-        {/* Info Cards */}
+        {}
         <div style={{ display: 'flex', flexDirection: 'column', gap: 10, marginBottom: 24 }}>
           {[
             { icon: '📧', label: 'Email', value: user?.email },
@@ -79,8 +72,7 @@ export default function ProfileScreen() {
             </div>
           ))}
         </div>
-
-        {/* FAQs */}
+        {}
         <div style={{ background: 'var(--card)', border: '1px solid var(--border)', borderRadius: 14, padding: 16, marginBottom: 20 }}>
           <div style={{ fontWeight: 700, marginBottom: 14 }}>❓ FAQ</div>
           {[
@@ -94,8 +86,7 @@ export default function ProfileScreen() {
             </div>
           ))}
         </div>
-
-        {/* Logout */}
+        {}
         <button
           onClick={handleLogout}
           style={{ width: '100%', background: 'rgba(239,68,68,0.1)', border: '1px solid rgba(239,68,68,0.25)', borderRadius: 12, padding: 14, color: '#f87171', fontWeight: 700, fontSize: 15, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}

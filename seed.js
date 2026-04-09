@@ -1,12 +1,7 @@
-/**
- * Firebase Seed Script
- * Run: node seed.js
- * Seeds sample complaints and admin users for demo purposes
- */
+
 const { initializeApp } = require('firebase/app');
 const { getFirestore, collection, addDoc, setDoc, doc, serverTimestamp } = require('firebase/firestore');
 const { getAuth, createUserWithEmailAndPassword } = require('firebase/auth');
-
 const firebaseConfig = {
   apiKey: "AIzaSyAECw9foiA16-QNnnBYIbURDYfyzBTTBGA",
   authDomain: "public-grivance-portal.firebaseapp.com",
@@ -15,11 +10,9 @@ const firebaseConfig = {
   messagingSenderId: "760260395924",
   appId: "1:760260395924:web:8224deebd52e107f884581",
 };
-
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const auth = getAuth(app);
-
 const SAMPLE_COMPLAINTS = [
   { title: 'Major water pipeline burst near school', description: 'Large water pipeline burst near Government Primary School, causing flooding on road. Multiple shops affected. Water supply cut for 3 days.', category: 'water', severity: 'critical', location: { lat: 20.5937, lng: 78.9629, area: 'Station Road', address: 'Near Govt School, Station Road' }, reportCount: 12, status: 'submitted', populationImpact: 45 },
   { title: 'Street light outage on main highway', description: 'All streetlights from Police Chowki to Bus Stand have been non-functional for 5 days. Accidents happening at night.', category: 'electricity', severity: 'high', location: { lat: 20.5940, lng: 78.9635, area: 'Market Area', address: 'Main Highway, Market Area' }, reportCount: 7, status: 'underReview', populationImpact: 200 },
@@ -34,23 +27,18 @@ const SAMPLE_COMPLAINTS = [
   { title: 'Road construction damage – still unrepaired', description: 'Contractor dug up road for pipeline work 3 months ago but never repaired it. Deep trenches causing accidents daily.', category: 'road', severity: 'medium', location: { lat: 20.5960, lng: 78.9628, area: 'Bus Stand', address: 'Bus Stand Approach Road' }, reportCount: 4, status: 'resolved', populationImpact: 1500 },
   { title: 'Public toilet facility locked permanently', description: 'The public toilet near the market has been locked for 2 weeks by the contractor. Citizens forced to use open spaces.', category: 'sanitation', severity: 'medium', location: { lat: 20.5938, lng: 78.9660, area: 'Market Area', address: 'Weekly Market Area' }, reportCount: 6, status: 'pending', populationImpact: 2000 },
 ];
-
 const ADMIN_ACCOUNTS = [
   { email: 'superadmin@grievanceiq.ai', password: 'Admin@123', name: 'Super Admin', role: 'superAdmin' },
   { email: 'roads@grievanceiq.ai', password: 'Dept@123', name: 'Roads Department', role: 'department', department: 'road' },
   { email: 'water@grievanceiq.ai', password: 'Dept@123', name: 'Water Supply', role: 'department', department: 'water' },
   { email: 'power@grievanceiq.ai', password: 'Dept@123', name: 'Electricity Dept', role: 'department', department: 'electricity' },
 ];
-
 const CITIZEN_ACCOUNTS = [
   { email: 'rahul@citizen.in', password: 'Pass@123', name: 'Rahul Sharma', phone: '9876543210' },
   { email: 'priya@citizen.in', password: 'Pass@123', name: 'Priya Patel', phone: '9123456789' },
 ];
-
 async function seed() {
   console.log('🌱 Starting seed...\n');
-
-  // Create admin accounts
   console.log('Creating admin accounts...');
   for (const acc of ADMIN_ACCOUNTS) {
     try {
@@ -65,8 +53,6 @@ async function seed() {
       console.log(`⚠️  ${acc.email}: ${e.message}`);
     }
   }
-
-  // Create citizen accounts
   console.log('\nCreating citizen accounts...');
   const citizenIds = {};
   for (const acc of CITIZEN_ACCOUNTS) {
@@ -82,8 +68,6 @@ async function seed() {
       console.log(`⚠️  ${acc.email}: ${e.message}`);
     }
   }
-
-  // Add sample complaints
   console.log('\nAdding sample complaints...');
   const userId = citizenIds['rahul@citizen.in'] || 'demo-user';
   for (let i = 0; i < SAMPLE_COMPLAINTS.length; i++) {
@@ -108,7 +92,6 @@ async function seed() {
       console.log(`❌ Error: ${e.message}`);
     }
   }
-
   console.log('\n✨ Seed complete!');
   console.log('\n📋 LOGIN CREDENTIALS:');
   console.log('Admin Panel (http://localhost:5173):');
@@ -117,5 +100,4 @@ async function seed() {
   CITIZEN_ACCOUNTS.forEach(a => console.log(`  👤 ${a.email} / ${a.password}`));
   process.exit(0);
 }
-
 seed().catch(e => { console.error(e); process.exit(1); });

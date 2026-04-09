@@ -12,9 +12,7 @@ import {
 import { calculatePriorityScore } from '../intelligence/priorityEngine';
 import { ArrowLeft, User, Calendar, MapPin, Phone, CheckCircle, AlertTriangle, Clock, FileText } from 'lucide-react';
 import toast from 'react-hot-toast';
-
 const STATUSES = ['submitted', 'underReview', 'assigned', 'inProgress', 'escalated', 'resolved'];
-
 export default function ComplaintDetailPage() {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -28,7 +26,6 @@ export default function ComplaintDetailPage() {
   const [notes, setNotes] = useState('');
   const [statusNote, setStatusNote] = useState('');
   const [updating, setUpdating] = useState(false);
-
   useEffect(() => {
     const fetchComplaint = async () => {
       try {
@@ -42,7 +39,6 @@ export default function ComplaintDetailPage() {
     };
     fetchComplaint();
   }, [id]);
-
   const handleStatusUpdate = async (newStatus) => {
     setUpdating(true);
     try {
@@ -56,7 +52,6 @@ export default function ComplaintDetailPage() {
       setUpdating(false);
     }
   };
-
   const handleAssign = async () => {
     if (!assignee) { toast.error('Enter assignee name'); return; }
     setUpdating(true);
@@ -70,7 +65,6 @@ export default function ComplaintDetailPage() {
       setUpdating(false);
     }
   };
-
   const handleEscalate = async () => {
     if (!confirm('Escalate this complaint?')) return;
     try {
@@ -79,11 +73,9 @@ export default function ComplaintDetailPage() {
       toast.success('Complaint escalated');
     } catch { toast.error('Escalation failed'); }
   };
-
   if (loading) return (
     <div className="loading-screen"><div className="spinner" /></div>
   );
-
   if (!complaint) return (
     <div className="page-content" style={{ textAlign: 'center', paddingTop: 80 }}>
       <div style={{ fontSize: 48 }}>❌</div>
@@ -91,9 +83,7 @@ export default function ComplaintDetailPage() {
       <button className="btn btn-secondary" onClick={() => navigate('/complaints')}>← Back</button>
     </div>
   );
-
   const score = calculatePriorityScore(complaint);
-
   return (
     <>
       <TopNavbar
@@ -106,7 +96,7 @@ export default function ComplaintDetailPage() {
         }
       />
       <div className="page-content animate-fadeIn">
-        {/* Header Bar */}
+        {}
         <div className="card mb-4">
           <div className="flex items-center justify-between flex-wrap" style={{ gap: 12 }}>
             <div style={{ flex: 1 }}>
@@ -131,11 +121,10 @@ export default function ComplaintDetailPage() {
             </div>
           </div>
         </div>
-
         <div className="grid-2" style={{ alignItems: 'start' }}>
-          {/* Left Column */}
+          {}
           <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
-            {/* Tabs */}
+            {}
             <div className="tabs">
               {['details', 'media', 'timeline', 'location'].map(tab => (
                 <button key={tab} className={`tab ${activeTab === tab ? 'active' : ''}`} onClick={() => setActiveTab(tab)}>
@@ -143,7 +132,6 @@ export default function ComplaintDetailPage() {
                 </button>
               ))}
             </div>
-
             {activeTab === 'details' && (
               <div className="card">
                 <div className="card-header"><span className="card-title">Complaint Description</span></div>
@@ -183,7 +171,6 @@ export default function ComplaintDetailPage() {
                 )}
               </div>
             )}
-
             {activeTab === 'media' && (
               <div className="card">
                 <div className="card-header"><span className="card-title">Media Evidence</span></div>
@@ -198,14 +185,12 @@ export default function ComplaintDetailPage() {
                 )}
               </div>
             )}
-
             {activeTab === 'timeline' && (
               <div className="card">
                 <div className="card-header"><span className="card-title">Status Timeline</span></div>
                 <ComplaintTimeline status={complaint.status || 'submitted'} timeline={complaint.timeline} />
               </div>
             )}
-
             {activeTab === 'location' && (
               <div className="card">
                 <div className="card-header"><span className="card-title">Location Details</span></div>
@@ -236,10 +221,9 @@ export default function ComplaintDetailPage() {
               </div>
             )}
           </div>
-
-          {/* Right Column – Actions */}
+          {}
           <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
-            {/* Status Update */}
+            {}
             <div className="card">
               <div className="card-header"><span className="card-title">Update Status</span></div>
               <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginBottom: 12 }}>
@@ -269,8 +253,7 @@ export default function ComplaintDetailPage() {
                 />
               </div>
             </div>
-
-            {/* Assignment */}
+            {}
             <div className="card">
               <div className="card-header"><span className="card-title">Task Assignment</span></div>
               <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
@@ -294,8 +277,7 @@ export default function ComplaintDetailPage() {
                 </button>
               </div>
             </div>
-
-            {/* Duplicate Cluster */}
+            {}
             {complaint.reportCount > 1 && (
               <div className="card">
                 <div className="card-header">

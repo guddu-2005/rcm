@@ -7,7 +7,6 @@ import DepartmentPanel from './DepartmentPanel'
 import WorkerPanel from './WorkerPanel'
 import Analytics from './Analytics'
 import AdminSettings from './AdminSettings'
-
 const navItems = [
   { label: 'Dashboard', href: '/admin/dashboard', icon: <LayoutDashboard size={17} /> },
   { label: 'All Complaints', href: '/admin/dashboard/complaints', icon: <List size={17} /> },
@@ -16,7 +15,6 @@ const navItems = [
   { label: 'Analytics', href: '/admin/dashboard/analytics', icon: <BarChart3 size={17} /> },
   { label: 'Settings', href: '/admin/dashboard/settings', icon: <Settings size={17} /> },
 ]
-
 export default function AdminPortal() {
   return (
     <SidebarShell title="Administration" subtitle="Admin Panel" navItems={navItems} accentColor="bg-purple-700">
