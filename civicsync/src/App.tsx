@@ -17,15 +17,25 @@ import WorkerPortal from './pages/worker/WorkerPortal'
 import VoiceAgent from './components/VoiceAgent'
 function Guard({ children, role }: { children: React.ReactNode; role: string | string[] }) {
   const { session } = useStore()
+  // console.log("session state:", session)
+  
   if (!session) return <Navigate to="/" replace />
-  const roles = Array.isArray(role) ? role : [role]
-  if (!roles.includes(session.role)) return <Navigate to="/" replace />
+  
+  let roles = Array.isArray(role) ? role : [role]
+  // check if user has perm
+  if (!roles.includes(session.role)) {
+    // alert('not authorized')
+    return <Navigate to="/" replace />
+  }
   return <>{children}</>
 }
 export default function App() {
   const { loadComplaints } = useStore()
+  
   useEffect(() => {
+    // console.log("loading app...")
     seedIfNeeded()
+    // load latest
     loadComplaints()
   }, [])
   return (
@@ -35,7 +45,8 @@ export default function App() {
         success: { iconTheme: { primary: '#16A34A', secondary: 'white' } },
       }} />
       <Routes>
-        {}
+        
+        {/* Public Routes */}
         <Route path="/" element={<Landing />} />
         <Route path="/citizen/register" element={<CitizenRegister />} />
         <Route path="/citizen/login" element={<CitizenLogin />} />
@@ -43,14 +54,18 @@ export default function App() {
         <Route path="/department/login" element={<DepartmentLogin />} />
         <Route path="/worker/register" element={<WorkerRegister />} />
         <Route path="/worker/login" element={<WorkerLogin />} />
-        {}
-        <Route path="/citizen/dashboard}
-        <Route path="/admin/dashboard}
-        <Route path="/department/dashboard}
-        <Route path="/worker/dashboard}
+
+        {/* Dashboards */}
+        <Route path="/citizen/dashboard/*" element={<Guard role="citizen"><CitizenPortal /></Guard>} />
+        <Route path="/admin/dashboard/*" element={<Guard role="admin"><AdminPortal /></Guard>} />
+        <Route path="/department/dashboard/*" element={<Guard role="department"><DepartmentPortal /></Guard>} />
+        <Route path="/worker/dashboard/*" element={<Guard role="worker"><WorkerPortal /></Guard>} />
+
+        {/* 404 handler */}
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
-      {}
+      
+      {/* <VoiceAgent />  -- keeping this on for now */}
       <VoiceAgent />
     </BrowserRouter>
   )
