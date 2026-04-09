@@ -362,16 +362,7 @@ export default function FileComplaint() {
               <ImageIcon size={20} className="text-gray-400 mb-2" />
               <span className="text-sm text-gray-500">Click to upload photo</span>
               <span className="text-xs text-gray-400">Max 2MB — JPG, PNG</span>
-              <input type="file" accept="image/*" onChange={handlePhoto} className="hidden" />
-            </label>
-          )}
-        </div>
-        
-        <button type="submit" disabled={loading || isScoring}
-          className="w-full py-3.5 bg-primary-600 hover:bg-primary-700 text-white font-bold rounded-xl transition-all shadow-lg flex items-center justify-center gap-2">
-          {loading ? <span className="animate-pulse">Submitting...</span> : <><Send size={15} /> Submit Complaint</>}
-        </button>
-      </form>
+              <input type="file" accept="image}
       {dupModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4"
           style={{ background: 'rgba(0,0,0,0.55)', backdropFilter: 'blur(4px)' }}>

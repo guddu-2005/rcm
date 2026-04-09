@@ -1,6 +1,5 @@
 
 import type { Priority } from './types'
-// keywords to check
 const CRITICAL = [
   'fire', 'flood', 'death', 'died', 'dead', 'drowning', 'electrocution', 'electrocuted',
   'collapsed', 'collapse', 'explosion', 'exploded', 'blast', 'accident', 'injury', 'injured',
@@ -66,7 +65,7 @@ export async function fetchGroqPriority(
     return null
   }
   const prompt = `
-You are checking complaint priority levels.
+Service to analyze complaint priority levels. 
 Evaluate the following complaint for priority.
 Task: Calculate a priority score from 0 (lowest) to 100 (critical life-threatening).
 Category: ${category}
@@ -103,13 +102,12 @@ Return ONLY valid JSON. Format exactly as:
        return null
     }
     const data = await res.json()
-    let content = data.choices[0].message.content
-    // console.log("groq answer: " + content)
+    const content = data.choices[0].message.content
     const parsed = JSON.parse(content)
     if (typeof parsed.score !== 'number' || !['Low', 'Medium', 'High'].includes(parsed.level)) return null
     return parsed as PriorityScore
   } catch(err) {
-    console.error("error fetching api:", err)
+    console.error("Groq JSON parsing error:", err)
     return null
   }
 }
@@ -118,18 +116,15 @@ export function computePriorityScore(
   description: string,
   category = 'Other'
 ): PriorityScore {
-  let text = `${title} ${description}`.toLowerCase()
-  let factors: string[] = []
-  
-  // start base score
+  const text = `${title} ${description}`.toLowerCase()
+  const factors: string[] = []
   let raw = CATEGORY_BASE[category] ?? 30
-  
   let critHits = 0
-  for (let kw of CRITICAL) {
+  for (const kw of CRITICAL) {
     if (text.includes(kw)) {
       raw += 25
       critHits++
-      // if (critHits <= 2) factors.push(`Critical: "${kw}"`)
+      if (critHits <= 2) factors.push(`Critical: "${kw}"`)
     }
   }
   let sevHits = 0
