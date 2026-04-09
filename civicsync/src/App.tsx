@@ -44,10 +44,10 @@ export default function App() {
         <Route path="/worker/register" element={<WorkerRegister />} />
         <Route path="/worker/login" element={<WorkerLogin />} />
         {}
-        <Route path="/citizen/dashboard}
-        <Route path="/admin/dashboard}
-        <Route path="/department/dashboard}
-        <Route path="/worker/dashboard}
+        <Route path="/citizen/dashboard" element={<Guard role="citizen"><CitizenPortal /></Guard>} />
+        <Route path="/admin/dashboard" element={<Guard role="admin"><AdminPortal /></Guard>} />
+        <Route path="/department/dashboard" element={<Guard role="department"><DepartmentPortal /></Guard>} />
+        <Route path="/worker/dashboard" element={<Guard role="worker"><WorkerPortal /></Guard>} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
       {}
