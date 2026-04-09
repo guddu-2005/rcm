@@ -3,7 +3,7 @@ import { useNavigate, Link } from 'react-router-dom'
 import { useStore } from '../../store'
 import { addCitizen, getCitizens } from '../../storage'
 import { FormError } from '../../components/ui'
-import { User, Mail, Lock, Phone, Eye, EyeOff, ArrowLeft } from 'lucide-react'
+import { User, Eye, EyeOff, ArrowLeft } from 'lucide-react'
 import toast from 'react-hot-toast'
 
 export default function CitizenRegister() {

@@ -1,6 +1,5 @@
 import {
-  LS, type Citizen, type DepartmentUser, type Worker, type Complaint,
-  type Department, type Priority, type ComplaintStatus, CATEGORY_TO_DEPT
+  LS, type Citizen, type DepartmentUser, type Worker, type Complaint
 } from './types'
 import { computePriorityScore } from './priorityEngine'
 

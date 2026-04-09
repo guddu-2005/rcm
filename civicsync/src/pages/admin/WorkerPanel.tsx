@@ -1,7 +1,7 @@
 import { useStore } from '../../store'
-import { getWorkers, getComplaints } from '../../storage'
+import { getWorkers } from '../../storage'
 import { Avatar, EmptyState } from '../../components/ui'
-import { HardHat, CheckCircle } from 'lucide-react'
+import { HardHat } from 'lucide-react'
 
 export default function WorkerPanel() {
   const { complaints } = useStore()

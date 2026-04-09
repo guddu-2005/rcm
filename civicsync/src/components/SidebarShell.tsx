@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { NavLink, useNavigate } from 'react-router-dom'
 import { useStore } from '../store'
-import { Menu, X, LogOut, ChevronRight } from 'lucide-react'
+import { Menu, LogOut } from 'lucide-react'
 import { Avatar } from './ui'
 
 interface NavItem { label: string; href: string; icon: React.ReactNode }

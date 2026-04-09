@@ -229,6 +229,7 @@ img { display: block; max-width: 100%; }
   width: 100%;
   transition: border 0.2s, box-shadow 0.2s;
   -webkit-appearance: none;
+  appearance: none;
 }
 .form-input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px rgba(124,58,237,0.15); }
 .form-input::placeholder { color: var(--text3); }

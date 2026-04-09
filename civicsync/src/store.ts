@@ -1,6 +1,6 @@
 import { create } from 'zustand'
-import { LS, type Citizen, type DepartmentUser, type Worker, type Complaint, type Priority, type ComplaintStatus, type Department } from './types'
-import { lsGet, lsSet, getComplaints, saveComplaints } from './storage'
+import { LS, type Complaint, type Priority, type ComplaintStatus, type Department } from './types'
+import { lsGet, lsSet, getComplaints } from './storage'
 
 export interface VoiceCommandData {
   title?: string;
@@ -44,7 +44,7 @@ interface AppStore {
   setAdminCommandData: (data: AdminCommandData | null) => void
 }
 
-export const useStore = create<AppStore>((set, get) => ({
+export const useStore = create<AppStore>((set) => ({
   session: lsGet<Session | null>(LS.SESSION, null),
   complaints: getComplaints(),
 

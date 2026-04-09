@@ -1,6 +1,6 @@
 import { useStore } from '../../store'
 import { DEPARTMENTS, DEPT_ICONS, type Department } from '../../types'
-import { BarChart3, TrendingUp, Clock, CheckCircle, AlertTriangle } from 'lucide-react'
+import { BarChart3, TrendingUp, Clock, CheckCircle } from 'lucide-react'
 
 export default function Analytics() {
   const { complaints } = useStore()

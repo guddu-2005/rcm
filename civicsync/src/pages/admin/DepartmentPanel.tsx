@@ -1,7 +1,6 @@
 import { useStore } from '../../store'
 import { getWorkers } from '../../storage'
 import { DEPARTMENTS, DEPT_ICONS, type Department } from '../../types'
-import { Building2 } from 'lucide-react'
 
 export default function DepartmentPanel() {
   const { complaints } = useStore()

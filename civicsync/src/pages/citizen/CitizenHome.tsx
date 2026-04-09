@@ -1,6 +1,5 @@
 import { useNavigate } from 'react-router-dom'
 import { useStore } from '../../store'
-import { getComplaints } from '../../storage'
 import { StatusBadge, PriorityBadge, EmptyState } from '../../components/ui'
 import { FilePlus, Clock, CheckCircle, AlertCircle, TrendingUp, ArrowRight } from 'lucide-react'
 import { timeAgo } from '../../storage'

@@ -1,8 +1,8 @@
 import { useState } from 'react'
 import { useStore } from '../../store'
-import { StatusBadge, PriorityBadge, EmptyState, Avatar } from '../../components/ui'
+import { StatusBadge, PriorityBadge, EmptyState } from '../../components/ui'
 import { STATUS_CONFIG, type ComplaintStatus, type Complaint } from '../../types'
-import { List, ChevronDown, ChevronUp, MapPin, Clock, CheckCircle, X } from 'lucide-react'
+import { List, ChevronDown, ChevronUp, MapPin, Clock, CheckCircle } from 'lucide-react'
 import { timeAgo } from '../../storage'
 
 const STATUSES: ComplaintStatus[] = ['Submitted', 'Verified', 'Assigned', 'In Progress', 'Resolved', 'Closed']

@@ -1,6 +1,5 @@
 import React from 'react'
 import { STATUS_CONFIG, PRIORITY_CONFIG, type ComplaintStatus, type Priority } from '../types'
-import { Circle } from 'lucide-react'
 
 export function StatusBadge({ status }: { status: ComplaintStatus }) {
   const cfg = STATUS_CONFIG[status]

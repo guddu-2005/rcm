@@ -1,12 +1,8 @@
-import { useState } from 'react'
-import { Routes, Route, useNavigate } from 'react-router-dom'
-import { useStore } from '../../store'
+import { Routes, Route } from 'react-router-dom'
 import { SidebarShell } from '../../components/SidebarShell'
 import {
-  LayoutDashboard, FilePlus, List, User,
-  PlusCircle, Clock, CheckCircle, AlertCircle
+  LayoutDashboard, FilePlus, List, User
 } from 'lucide-react'
-import { getComplaints } from '../../storage'
 
 // Sub-pages
 import CitizenHome from './CitizenHome'

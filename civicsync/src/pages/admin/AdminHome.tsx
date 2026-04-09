@@ -1,5 +1,4 @@
 import { useStore } from '../../store'
-import { getComplaints } from '../../storage'
 import { StatusBadge, PriorityBadge } from '../../components/ui'
 import { TrendingUp, CheckCircle, Clock, AlertTriangle, Users, Building2, ArrowRight } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
