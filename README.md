@@ -1,3 +1,14 @@
+Team Number - 13
+
+Team Name - AGNIVEERYA
+
+Names of all Team Members - Subhankar Gaen, Durga Prasad Behera, Smrutiranjan Behera, Shibu Kumar Chanda, Subham Pradhan
+
+Selected Problem Statement - Public Grievance Prioritisation Engine (01)
+
+
+
+
 # CivicSync
 
 CivicSync is a modern, comprehensive GovTech platform designed to streamline the reporting, routing, and resolution of civic issues and complaints.
